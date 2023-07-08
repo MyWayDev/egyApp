@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'dart:io' show Platform;
 import 'dart:math';
-import 'package:carrier_info/carrier_info.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:mor_release/models/user.dart';
 import 'package:mor_release/pages/items/items.dart';
 import 'package:mor_release/pages/items/items.tabs.dart';
 import 'package:mor_release/models/ticket.dart';
