@@ -1,0 +1,193 @@
+{
+        "rules": {
+                ".read": true,
+                ".write": "!data.exists() || !newData.exists() ||auth !=null ",
+                "flamelink": {
+                        "environments": {
+                                "indoProduction": {
+                                        "content": {
+                                                "items": {
+                                                        "en-US": {
+                                                                ".indexOn": [
+                                                                        "itemId",
+                                                                        "catalogue"
+                                                                ],
+                                                                "itemId": {
+                                                                        ".indexOn": ".value"
+                                                                }
+                                                        }
+                                                },
+                                                "support": {
+                                                        "en-US": {
+                                                                ".indexOn": "user",
+                                                                "user": {
+                                                                        ".indexOn": ".value"
+                                                                }
+                                                        },
+                                                        "courier": {
+                                                                "en-US": {
+                                                                        ".indexOn": [
+                                                                                "service",
+                                                                                "courierId"
+                                                                        ],
+                                                                        "service": {
+                                                                                ".indexOn": ".value"
+                                                                        }
+                                                                }
+                                                        },
+                                                        "areas": {
+                                                                "en-US": {
+                                                                        ".indexOn": [
+                                                                                "id",
+                                                                                "areaId"
+                                                                        ],
+                                                                        "id": {
+                                                                                ".indexOn": ".value"
+                                                                        }
+                                                                }
+                                                        },
+                                                }
+                                        },
+                                },
+                                "egyProduction": {
+                                        "content": {
+                                                "items": {
+                                                        "en-US": {
+                                                                ".indexOn": [
+                                                                        "catalogue",
+                                                                        "itemId",
+                                                                        "disable"
+                                                                ],
+                                                                "itemId": {
+                                                                        ".indexOn": ".value"
+                                                                }
+                                                        }
+                                                },
+                                                "support": {
+                                                        "en-US": {
+                                                                ".indexOn": "user",
+                                                                "user": {
+                                                                        ".indexOn": ".value"
+                                                                }
+                                                        },
+                                                        "courier": {
+                                                                "en-US": {
+                                                                        ".indexOn": [
+                                                                                "service",
+                                                                                "courierId"
+                                                                        ],
+                                                                        "service": {
+                                                                                ".indexOn": ".value"
+                                                                        }
+                                                                }
+                                                        },
+                                                        "areas": {
+                                                                "en-US": {
+                                                                        ".indexOn": [
+                                                                                "id",
+                                                                                "areaId"
+                                                                        ],
+                                                                        "id": {
+                                                                                ".indexOn": ".value"
+                                                                        }
+                                                                }
+                                                        },
+                                                }
+                                        }
+                                },
+                        },
+                        "production": {
+                                "content": {
+                                        "items": {
+                                                "en-US": {
+                                                        ".indexOn": [
+                                                                "itemId",
+                                                                "catalogue",
+                                                                "disable"
+                                                        ],
+                                                        "itemId": {
+                                                                ".indexOn": ".value"
+                                                        }
+                                                }
+                                        },
+                                        "support": {
+                                                "en-US": {
+                                                        ".indexOn": "user",
+                                                        "user": {
+                                                                ".indexOn": ".value"
+                                                        }
+                                                },
+                                                "users": {
+                                                        "en-US": {
+                                                                ".indexOn": "distrId",
+                                                                "distrId": {
+                                                                        ".indexOn": ".value"
+                                                                }
+                                                        }
+                                                }
+                                        },
+                                        "courier": {
+                                                "en-US": {
+                                                        ".indexOn": [
+                                                                "service",
+                                                                "courierId"
+                                                        ],
+                                                        "service": {
+                                                                ".indexOn": ".value"
+                                                        }
+                                                }
+                                        },
+                                        "tokens": {
+                                                "en-US": {
+                                                        ".indexOn": "tokens-list",
+                                                        "tokens-list": {
+                                                                ".indexOn": ".value"
+                                                        }
+                                                }
+                                        },
+                                        "areas": {
+                                                "en-US": {
+                                                        ".indexOn": [
+                                                                "id",
+                                                                "areaId"
+                                                        ],
+                                                        "id": {
+                                                                ".indexOn": ".value"
+                                                        }
+                                                }
+                                        },
+                                }
+                        },
+                },
+                "indoDb": {
+                        "tokens": {
+                                "en-US": {
+                                        ".indexOn": "tokens-list",
+                                        "tokens-list": {
+                                                ".indexOn": ".value"
+                                        }
+                                }
+                        },
+                        "users": {
+                                "en-US": {
+                                        ".indexOn": "distrId"
+                                }
+                        },
+                },
+                "egyDb": {
+                        "tokens": {
+                                "en-US": {
+                                        ".indexOn": "tokens-list",
+                                        "tokens-list": {
+                                                ".indexOn": ".value"
+                                        }
+                                }
+                        },
+                        "users": {
+                                "en-US": {
+                                        ".indexOn": "distrId"
+                                }
+                        }
+                }
+        }
+}
