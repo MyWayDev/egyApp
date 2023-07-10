@@ -2,9 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
-
 import 'package:path_provider/path_provider.dart';
 
 class Cat extends StatefulWidget {
