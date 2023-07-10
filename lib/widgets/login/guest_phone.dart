@@ -2,7 +2,6 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:mor_release/scoped/connected.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:mor_release/pages/order/widgets/storeFloat.dart' as store;
 import '../../bottom_nav_guest.dart';
 import '../../models/user.dart';
 
