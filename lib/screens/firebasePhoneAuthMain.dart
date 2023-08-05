@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:mor_release/screens/splash_screen.dart';
 import '../utlis/globals.dart';
 import '../utlis/route_generator.dart';
-import '../utlis/spp_theme.dart';
 
 class OtpApp extends StatelessWidget {
   const OtpApp({
@@ -16,8 +15,22 @@ class OtpApp extends StatelessWidget {
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         scaffoldMessengerKey: Globals.scaffoldMessengerKey,
-        theme: AppTheme.darkTheme,
-        darkTheme: AppTheme.darkTheme,
+        theme: ThemeData(
+          primarySwatch: Colors.pink,
+          brightness: Brightness.light,
+          primaryColor: Colors.pink[900],
+          accentColor: Colors.pinkAccent[700],
+          backgroundColor: Colors.white70,
+          buttonColor: Colors.pink[900],
+        ),
+        darkTheme: ThemeData(
+          primarySwatch: Colors.pink,
+          brightness: Brightness.light,
+          primaryColor: Colors.pink[900],
+          accentColor: Colors.pinkAccent[700],
+          backgroundColor: Colors.white70,
+          buttonColor: Colors.pink[900],
+        ),
         onGenerateRoute: RouteGenerator.generateRoute,
         initialRoute: SplashScreen.id,
       ),

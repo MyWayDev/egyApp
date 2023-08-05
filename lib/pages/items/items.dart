@@ -74,6 +74,7 @@ class _ItemsPage extends State<ItemsPage> with SingleTickerProviderStateMixin {
   bool userType() {
     bool _isAllowed = widget.model.user.isGuest
         ? widget.model.guestInfo.isAllowed
+        // Add guet data to firebase or discard this option..
         : widget.model.user.isAllowed;
     return _isAllowed;
   }

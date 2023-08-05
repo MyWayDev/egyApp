@@ -67,7 +67,7 @@ class _PinInputFieldState extends State<PinInputField> {
         fontWeight: FontWeight.bold,
       ),
       decoration: BoxDecoration(
-        color: Theme.of(context).cardColor,
+        color: Colors.lightBlue,
         borderRadius: BorderRadius.circular(7.5),
       ),
     );
@@ -89,12 +89,12 @@ class _PinInputFieldState extends State<PinInputField> {
           height: size.height * _focusScaleFactor,
           width: size.width * _focusScaleFactor,
           decoration: defaultPinTheme.decoration.copyWith(
-            border: Border.all(color: Theme.of(context).colorScheme.secondary),
+            border: Border.all(color: Colors.transparent),
           ),
         ),
         errorPinTheme: defaultPinTheme.copyWith(
           decoration: BoxDecoration(
-            color: Theme.of(context).errorColor,
+            color: Colors.transparent,
             borderRadius: BorderRadius.circular(8),
           ),
         ),

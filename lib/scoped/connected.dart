@@ -2644,14 +2644,26 @@ for( var i = 0 ; i < _list.length; i++){
 
   Guest guestInfo;
   Future<Guest> guestDetails(String key) async {
-    final DataSnapshot snapshot = await database
-        .reference()
-        .child('$pathDB/guest/en-US')
-        .child(key)
-        .once();
-    guestInfo = Guest.fromSnapshot(snapshot);
-    print('guest key:$key');
-    return guestInfo;
+    try {
+      final DataSnapshot snapshot = await database
+          .reference()
+          .child('$pathDB/guest/en-US')
+          .child(key)
+          .once();
+
+      if (snapshot.value == null) {
+        // Return a default Guest object if the snapshot is null
+        return Guest.defaultGuest();
+      }
+
+      final guestInfo = Guest.fromSnapshot(snapshot);
+      print('guest key:$key');
+      return guestInfo;
+    } catch (e) {
+      print('Failed to load guest: $e');
+      // Return a default Guest object if an error occurred
+      return Guest.defaultGuest();
+    }
   }
 
   User user;
@@ -2708,7 +2720,7 @@ for( var i = 0 ; i < _list.length; i++){
             print('singin error caught:${e.toString()}');
             return false;
           }
-          updateToke(key);
+          // updateToke(key);
           fromGuest
               ? Navigator.push(
                   context,
@@ -2765,7 +2777,7 @@ for( var i = 0 ; i < _list.length; i++){
           print('singin error caught:${e.toString()}');
           return false;
         }
-        updateToke('6');
+        //  updateToke('6');
         print('  '
             'guest => ${_userInfo.isGuest}');
         print(_userInfo.email);
@@ -2781,12 +2793,12 @@ for( var i = 0 ; i < _list.length; i++){
     }
   }
 
-  updateToke(String _key) {
+  /*updateToke(String _key) {
     databaseReference = database.reference().child('$pathDB/users/en-US/$_key');
     if (token != null) {
       databaseReference.update({"token": token});
     }
-  }
+  }*/
 
   //!--------*
   bool access = true;

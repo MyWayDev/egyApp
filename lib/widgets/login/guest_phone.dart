@@ -29,29 +29,12 @@ class _TelephoneFormState extends State<TelephoneForm> {
     return lastEight;
   }
 
-  bool _matchPhones(String phone) {
-    for (String p in widget.guest.phone) {
-      print('phoneInfo..${_subStringPhone(p)}');
-      print('phoneInput..${_subStringPhone(phone)}');
-      if (_subStringPhone(p) == _subStringPhone(phone) && phone.length >= 8) {
-        print('matched==$matched');
-        print('phoneInfo..$p' + '...matched...' + 'phoneInput..$phone');
-        widget.guest.phone.clear();
-        widget.guest.phone.add(phone);
-        matched = true;
-        break;
-      }
-    }
-    print('matched==$matched');
-    return matched;
-  }
-
   addGuest(Guest guest) async {
     final FirebaseDatabase database = FirebaseDatabase.instance;
     final String pathDB = "egyDb/";
     DatabaseReference databaseReference =
         database.reference().child('$pathDB/guest/en-US');
-    databaseReference.child(widget.guest.phone.first).update(guest.toJson());
+    databaseReference.child(widget.guest.phone).update(guest.toJson());
   }
 
   void _showDialog() {
@@ -143,13 +126,12 @@ class _TelephoneFormState extends State<TelephoneForm> {
             ),
             IconButton(
                 onPressed: () async {
-                  _matchPhones(_controller.text);
                   if (_formKey.currentState.validate()) {
                     await model
                         .guestLogIn(context)
                         .whenComplete(() async => await addGuest(widget.guest))
                         .whenComplete(() async =>
-                            await model.guestDetails(widget.guest.phone.first))
+                            await model.guestDetails(widget.guest.phone))
                         .then((value) {
                       if (value) {
                         _formKey.currentState.reset();

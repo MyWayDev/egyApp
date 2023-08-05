@@ -595,7 +595,7 @@ class _NewMemberPage extends State<NewMemberPage> {
                                             ),
                                             TextFormField(
                                               initialValue: widget.isGuest
-                                                  ? model.guestInfo.phone.first
+                                                  ? model.guestInfo.phone
                                                   : '',
                                               readOnly:
                                                   widget.isGuest ? true : false,

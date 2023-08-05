@@ -32,6 +32,7 @@ class _AddRegionState extends State<AddRegion> {
   List<DropdownMenuItem> areas = [];
   String selectedRegion;
   var regionSplit;
+  // ignore: unused_field
   bool _isLoading = false;
 
   void loading(bool l) {

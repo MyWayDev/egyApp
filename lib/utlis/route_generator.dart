@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mor_release/scoped/connected.dart';
 
 import '../screens/authentication_screen.dart';
 import '../screens/home_screen.dart';

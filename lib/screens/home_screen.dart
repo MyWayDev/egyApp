@@ -48,6 +48,15 @@ class HomeScreen extends StatelessWidget {
                     AuthenticationScreen.id,
                     (route) => false,
                   );
+                  /* Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_){
+                        return OtpScreen(phone: phoneNumber,);
+                      })
+                      
+                     // VerifyPhoneNumberScreen.id,
+                     // arguments: phoneNumber,
+                    );*/
                 },
                 child: const Text('Logout'),
               ),

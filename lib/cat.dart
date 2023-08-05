@@ -14,6 +14,7 @@ class Cat extends StatefulWidget {
 
 class _CatState extends State<Cat> {
   String pathPDF = "";
+  // ignore: unused_field
   bool _isLoading = true;
   String searchResult = '';
   File pdfFile;

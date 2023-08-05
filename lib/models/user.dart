@@ -6,23 +6,35 @@ import 'package:firebase_database/firebase_database.dart';
 
 class Guest {
   String key;
-  List phone;
-
+  String phone;
+  String stamp;
+  String token;
   bool isAllowed;
-  String location;
 
-  Guest({this.phone, this.isAllowed, this.location});
+  Guest(
+      {this.phone = '0000000000',
+      this.isAllowed = false,
+      this.stamp,
+      this.token});
+
+  Guest.defaultGuest() {
+    phone = '0';
+    isAllowed = false;
+  }
+
   Guest.fromSnapshot(DataSnapshot snapshot)
       : key = snapshot.key,
         phone = snapshot.value["phone"],
-        location = snapshot.value["location"],
+        stamp = snapshot.value["stamp"] ?? DateTime.now(),
+        token = snapshot.value["token"],
         isAllowed = snapshot.value["isAllowed"] ?? false;
 
   toJson() {
     return {
-      "phone": phone ?? [],
-      "location": location ?? '',
-      'isAllowed': isAllowed ?? false
+      "phone": phone,
+      "stamp": stamp,
+      "token": token,
+      'isAllowed': isAllowed,
     };
   }
 }
@@ -54,13 +66,13 @@ class User {
       this.areaId,
       this.photoUrl,
       this.serviceCenter,
-      this.isAllowed,
+      this.isAllowed = false,
       this.isleader,
       this.isAdmin,
       this.tester,
       this.stores,
       this.token,
-      this.isGuest});
+      this.isGuest = false});
 
   toJson() {
     return {

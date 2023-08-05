@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:groovin_material_icons/groovin_material_icons.dart';
 import 'package:mor_release/catalog.dart';
 import 'package:mor_release/pages/items/items.dart';
 import 'package:mor_release/pages/order/order.dart';
+import 'package:mor_release/pages/user/login_screen.dart';
 //import 'package:mor_release/pages/user/email_verify.dart';
 import 'package:mor_release/scoped/connected.dart';
 import 'package:mor_release/track/track.tabs.dart';
 import 'package:mor_release/widgets/login/rest_Credintials.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:badges/badges.dart';
+
+import '../../main.dart';
 
 //////////////////////////////////////////////////////
 ///
@@ -76,7 +80,10 @@ class ItemsTabs extends StatelessWidget {
                     title: Text('خروج'),
                     onTap: () {
                       model.signOut();
-                      Navigator.pushReplacementNamed(context, '/');
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => LoginScreen()),
+                      );
                     }),
               ])),
               appBar: AppBar(

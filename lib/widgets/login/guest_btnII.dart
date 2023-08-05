@@ -11,19 +11,14 @@ import '../../scoped/connected.dart';
 import 'package:current_location/current_location.dart';
 
 class GuestButton extends StatefulWidget {
-  GuestButton({Key key}) : super(key: key);
+  final Guest guest;
+  GuestButton(this.guest, {Key key}) : super(key: key);
 
   @override
   State<GuestButton> createState() => _GuestButtonState();
 }
 
 class _GuestButtonState extends State<GuestButton> {
-  AndroidCarrierData _androidInfo;
-  AndroidCarrierData get androidInfo => _androidInfo;
-  set androidInfo(AndroidCarrierData carrierInfo) {
-    setState(() => _androidInfo = carrierInfo);
-  }
-
   String title =
       'للاستمرار في استخدام التطبيق برجاء' + 'الضغط في الشاشة التالية علي';
   String str = '-الاذونات'
@@ -31,46 +26,30 @@ class _GuestButtonState extends State<GuestButton> {
       '-سماح'
       '٢-الموقع'
       '-سماح'; // fix format before release;
-  PermissionStatus _phonePermission;
-  PermissionStatus _locationPermission;
-  List<String> simList = [];
 
-  Guest _guest = Guest(phone: [], location: '');
-
-  Future<void> getLocation(Guest guest) async {
-    await UserLocation.getValue().then((value) {
-      guest.location = value.regionName;
-      guest.phone = simList;
-    });
-  }
-
-  Future<void> initPlatformState() async {
-    simList.clear();
+  PermissionStatus _smsPermission;
+  Future<bool> initPlatformState() async {
+    //simList.clear();
 
     // Ask for permissions before requesting data
-    await [Permission.phone, Permission.location].request();
+    await [Permission.sms]
+        .request()
+        .whenComplete(() async => _smsPermission = await Permission.sms.status)
+        .whenComplete(() => print('${_smsPermission.toString()} smsInfo'));
 
-    _phonePermission = await Permission.phone.status;
-    _locationPermission = await Permission.location.status;
-    if (_phonePermission.isGranted == true &&
-        _locationPermission.isGranted == true) {
-      print('${_phonePermission.toString()} phoneInfo');
-      print('${_locationPermission.toString()} locationInfo');
-      // Platform messages may fail, so we use a try/catch PlatformException.
-      try {
-        if (Platform.isAndroid)
-          _androidInfo = await CarrierInfo.getAndroidInfo();
-        // if (Platform.isIOS) iosInfo = await CarrierInfo.getIosInfo();
-      } catch (e) {
-        print(e.toString());
-      }
-      _androidInfo.subscriptionsInfo.forEach((t) {
-        simList.add(t.phoneNumber);
-        print('${t.phoneNumber} telephonyInfo');
-      });
-      // simList.add('+201021487211'); //delete before release;
-      await getLocation(_guest);
+    return _smsPermission.isGranted;
+  }
+
+  bool _verified;
+  @override
+  void initState() {
+    if (widget.guest == null) {
+      _verified = false;
+    } else {
+      _verified = widget.guest.isAllowed;
     }
+    // TODO: implement initState
+    super.initState();
   }
 
   @override
@@ -113,68 +92,63 @@ class _GuestButtonState extends State<GuestButton> {
                     ],
                   ),
                   onPressed: () async {
-                    /*
-                    await initPlatformState();
-                    if (_phonePermission.isGranted == true &&
-                        _locationPermission.isGranted == true) {
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('أدخل رقم الهاتف',
+                    await initPlatformState().then((value) => !value
+                        ? showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              actions: <Widget>[
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.check,
+                                    color: Colors.green,
+                                  ),
+                                  onPressed: () {
+                                    openAppSettings();
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.close,
+                                    color: Colors.red,
+                                  ),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                              title: Text(
+                                '$title',
                                 textDirection: TextDirection.rtl,
-                                style: TextStyle(fontSize: 16)),
-                            content: TelephoneForm(_guest),
-                          );
-                        },
-                      );
-                    } else {
-                      showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                                actions: <Widget>[
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.check,
-                                      color: Colors.green,
-                                    ),
-                                    onPressed: () {
-                                      openAppSettings();
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(
-                                      Icons.close,
-                                      color: Colors.red,
-                                    ),
-                                    onPressed: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                  ),
-                                ],
-                                title: Text(
-                                  '$title',
-                                  textDirection: TextDirection.rtl,
-                                  textAlign: TextAlign.right,
-                                  overflow: TextOverflow.visible,
-                                ),
-                                content: Text(
-                                  '$str',
-                                  textDirection: TextDirection.rtl,
-                                  textAlign: TextAlign.right,
-                                  overflow: TextOverflow.visible,
-                                ),
-                              ));
-                    }*/
-                    Navigator.pushNamed(context, '/otpApp');
+                                textAlign: TextAlign.right,
+                                overflow: TextOverflow.visible,
+                              ),
+                              content: Text(
+                                '$str',
+                                textDirection: TextDirection.rtl,
+                                textAlign: TextAlign.right,
+                                overflow: TextOverflow.visible,
+                              ),
+                            ),
+                          )
+                        : _verified
+                            ? Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => BottomNavGuest(
+                                          '6',
+                                          isAdmin: model.user.isAdmin,
+                                          stores: model.user.stores,
+                                          isGuest: true,
+                                        )),
+                              )
+                            : Navigator.pushNamed(context, '/otpApp'));
+
                     //
                     /* Navigator.push(context, MaterialPageRoute(builder: (_) {
                     return PhoneInfo();
                   }));*/
-                  }
-                  // Navigator.pushNamed(context, '/registration'),
-                  ),
+                  }),
             ),
           ],
         ),

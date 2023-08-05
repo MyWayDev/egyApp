@@ -13,6 +13,9 @@ import 'package:mor_release/pages/order/end_order.dart';
 import 'package:mor_release/pages/order/order.dart';
 import 'package:mor_release/scoped/connected.dart';
 import 'package:mor_release/screens/firebasePhoneAuthMain.dart';
+import 'package:mor_release/screens/home_screen.dart';
+import 'package:mor_release/screens/verify_phone_number_screen.dart';
+import 'package:mor_release/sms_listen.dart';
 import './pages/user/registration_page.dart';
 import './pages/user/login_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -266,6 +269,7 @@ class _MyApp extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     model.settingsData();
+
     return ScopedModel<MainModel>(
       model: model,
       child: MaterialApp(
@@ -300,6 +304,9 @@ class _MyApp extends State<MyApp> {
           '/login': (BuildContext context) => LoginScreen(),
           '/registration': (BuildContext context) => RegistrationPage(),
           '/otpApp': (BuildContext context) => OtpApp(),
+          '/otpHome': (BuildContext context) => HomeScreen(),
+          '/otpAuth': (BuildContext context) => VerifyPhoneNumberScreen(),
+          //SmsListen(),
           '/bulkOrder': (BuildContext context) =>
               BulkOrder(model, model.shipmentArea, model.distrPoint),
           //'/welcome': (BuildContext context) => Welcome(),
