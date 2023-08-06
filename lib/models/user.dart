@@ -11,26 +11,22 @@ class Guest {
   String token;
   bool isAllowed;
 
-  Guest(
-      {this.phone = '0000000000',
-      this.isAllowed = false,
-      this.stamp,
-      this.token});
+  Guest({this.key, this.phone, this.isAllowed, this.stamp, this.token});
 
   Guest.defaultGuest() {
-    phone = '0';
     isAllowed = false;
   }
 
   Guest.fromSnapshot(DataSnapshot snapshot)
-      : key = snapshot.key,
+      : key = snapshot.value["key"],
         phone = snapshot.value["phone"],
-        stamp = snapshot.value["stamp"] ?? DateTime.now(),
+        stamp = snapshot.value["stamp"] ?? DateTime.now().toString(),
         token = snapshot.value["token"],
         isAllowed = snapshot.value["isAllowed"] ?? false;
 
   toJson() {
     return {
+      "key": key,
       "phone": phone,
       "stamp": stamp,
       "token": token,

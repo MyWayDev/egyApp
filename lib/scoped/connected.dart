@@ -2644,25 +2644,20 @@ for( var i = 0 ; i < _list.length; i++){
 
   Guest guestInfo;
   Future<Guest> guestDetails(String key) async {
-    try {
-      final DataSnapshot snapshot = await database
-          .reference()
-          .child('$pathDB/guest/en-US')
-          .child(key)
-          .once();
+    final DataSnapshot snapshot = await database
+        .reference()
+        .child('$pathDB/guest/en-US')
+        .child(key)
+        .once();
 
-      if (snapshot.value == null) {
-        // Return a default Guest object if the snapshot is null
-        return Guest.defaultGuest();
-      }
-
-      final guestInfo = Guest.fromSnapshot(snapshot);
+    if (snapshot?.value != null) {
+      final guestInfo = Guest.fromSnapshot(
+          snapshot); // Pass the value, not the snapshot itself
       print('guest key:$key');
       return guestInfo;
-    } catch (e) {
-      print('Failed to load guest: $e');
-      // Return a default Guest object if an error occurred
-      return Guest.defaultGuest();
+    } else {
+      print('Snapshot is null or contains no value for key: $key');
+      return null; // Or handle the error as appropriate for your app
     }
   }
 

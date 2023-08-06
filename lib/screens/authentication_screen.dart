@@ -46,10 +46,15 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   }
 
   Future<bool> _activeGuest(MainModel model) async {
-    guest = await model.guestDetails(_telephone());
-    model.guestInfo = guest;
+    guest = await model.guestDetails(_telephone()).then((value) {
+      if (value != null) {
+        guest = value;
+        model.guestInfo = guest;
+      }
+      return value;
+    });
 
-    return guest.isAllowed;
+    return guest != null ? true : false; // Return false if guest is null
   }
 
   @override
@@ -115,25 +120,27 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                         } else {
                           var appSignature =
                               await SmsAutoFill().getAppSignature;
-                          await model.guestLogIn(context).whenComplete(
-                              () async => await _activeGuest(model)
-                                  ? Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => BottomNavGuest(
-                                                '6',
-                                                isAdmin: model.user.isAdmin,
-                                                stores: model.user.stores,
-                                                isGuest: true,
-                                              )),
-                                    )
-                                  : model
-                                      .signOut()
-                                      .whenComplete(() => Navigator.pushNamed(
-                                            context,
-                                            VerifyPhoneNumberScreen.id,
-                                            arguments: phoneNumber,
-                                          )));
+                          await model.guestLogIn(context).then((value) async =>
+                              value
+                                  ? await _activeGuest(model)
+                                      ? Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  BottomNavGuest(
+                                                    '6',
+                                                    isAdmin: model.user.isAdmin,
+                                                    stores: model.user.stores,
+                                                    isGuest: true,
+                                                  )),
+                                        )
+                                      : model.signOut().whenComplete(
+                                          () => Navigator.pushNamed(
+                                                context,
+                                                VerifyPhoneNumberScreen.id,
+                                                arguments: phoneNumber,
+                                              ))
+                                  : null);
 
                           //get firebase guest data and match phone number if exists
 

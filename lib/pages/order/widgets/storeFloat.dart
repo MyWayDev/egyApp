@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:groovin_material_icons/groovin_material_icons.dart';
@@ -21,6 +23,7 @@ class _StoreFloatState extends State<StoreFloat> with TickerProviderStateMixin {
 
   AnimationController _animationController1;
   Lock lock;
+  StreamSubscription<Event> subscription;
 
   @override
   void initState() {
@@ -37,13 +40,23 @@ class _StoreFloatState extends State<StoreFloat> with TickerProviderStateMixin {
         new AnimationController(vsync: this, duration: Duration(seconds: 1));
     _animationController1.repeat();
     super.initState();
+    super.initState();
+    DatabaseReference guestRef = FirebaseDatabase.instance
+        .reference()
+        .child('egyDb/guest/en-US')
+        .child(widget.model.guestInfo.phone);
+
+    subscription = guestRef.onValue.listen((Event event) {
+      widget.model.guestInfo = Guest.fromSnapshot(event.snapshot);
+      //print('Data updated: ${widget.model.guestInfo.toJson()}');
+    });
   }
 
   @override
   void dispose() {
-    _controller1.dispose();
-
-    _animationController1.dispose();
+    _controller1?.dispose();
+    subscription?.cancel();
+    _animationController1?.dispose();
     super.dispose();
   }
 
@@ -80,7 +93,7 @@ class _StoreFloatState extends State<StoreFloat> with TickerProviderStateMixin {
                       dialogDistrPoints(context, widget.model)
                           .whenComplete(() async {
                         await widget.model
-                            .guestActivated(widget.model.guestInfo.key);
+                            .guestActivated(widget.model.guestInfo.phone);
                       });
                     },
                     child: Text(
@@ -290,7 +303,7 @@ class _StoreFloatState extends State<StoreFloat> with TickerProviderStateMixin {
                   widget.model.docType = _branch.docType;
                 });
 
-                //  await widget.model.getPoints(widget.model.stores[index].region);
+                //await widget.model.getPoints(widget.model.stores[index].region);
                 Navigator.of(context).pop();
               },
             ),
