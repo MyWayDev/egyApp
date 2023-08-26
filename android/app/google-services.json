@@ -103,19 +103,19 @@
       },
       "oauth_client": [
         {
-          "client_id": "592280217867-0ei5822noepjvsi1ulgkrmam53fpvuu1.apps.googleusercontent.com",
+          "client_id": "592280217867-5ttfqupj4kfd1s45j0jbvk8kb80gvm4v.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.myway.mor_release",
-            "certificate_hash": "38f89513487817b991f399b6ff96147dc33e9462"
+            "certificate_hash": "1a77045cdbbd3c3a05fa956a1c41b01f321230d9"
           }
         },
         {
-          "client_id": "592280217867-bsnmhsigqv9fa2dja4hp2n2igovsscm5.apps.googleusercontent.com",
+          "client_id": "592280217867-vcs59na0o8iiaqon5ft31nie6vtdcchb.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.myway.mor_release",
-            "certificate_hash": "ca03271f04b32ac51d6eb4fd957738f4fcde26c7"
+            "certificate_hash": "a92c76c0dfaac477848b54a1d2d4efcce19229cc"
           }
         },
         {

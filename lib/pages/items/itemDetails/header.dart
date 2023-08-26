@@ -1,4 +1,5 @@
 import 'package:badges/badges.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:groovin_material_icons/groovin_material_icons.dart';
@@ -119,14 +120,16 @@ Widget _content(Item item, BuildContext context) {
                   height: MediaQuery.of(context).devicePixelRatio <= 1.5
                       ? 155
                       : 160,
-                  image: NetworkImage(item.imageUrl ?? ''),
+                  image: CachedNetworkImageProvider(item.imageUrl ?? ''),
                 ),
                 Positioned(
                   right: 40,
                   child: Opacity(
                     opacity: 0.60,
                     child: Image(
-                      image: NetworkImage(item.promoImageUrl ?? '', scale: 1.2),
+                      image: CachedNetworkImageProvider(
+                          item.promoImageUrl ?? '',
+                          scale: 1.2),
                     ),
                   ),
                 ),

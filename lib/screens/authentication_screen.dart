@@ -6,8 +6,7 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:mor_release/models/user.dart';
 import 'package:mor_release/screens/verify_phone_number_screen.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:sms_autofill/sms_autofill.dart';
-
+//import 'package:sms_autofill/sms_autofill.dart'; //*auto google policy
 import '../bottom_nav_guest.dart';
 import '../scoped/connected.dart';
 import '../utlis/helpers.dart';
@@ -40,7 +39,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
         .child('egyDb/guest/en-US')
         .child(key)
         .once();
-    guest = Guest.fromSnapshot(snapshot);
+    guest = Guest.fromGuestSnapshot(snapshot);
     print('guest key:$key');
     return guest;
   }
@@ -118,8 +117,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                             !_formKey.currentState.validate()) {
                           showSnackBar('يرجى إدخال رقم هاتف صحيح');
                         } else {
-                          var appSignature =
-                              await SmsAutoFill().getAppSignature;
+                          //  var appSignature =
+                          //  await SmsAutoFill().getAppSignature;
                           await model.guestLogIn(context).then((value) async =>
                               value
                                   ? await _activeGuest(model)
@@ -144,7 +143,6 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
 
                           //get firebase guest data and match phone number if exists
 
-                          print("App Signature : $appSignature");
                         }
                       },
                     ),

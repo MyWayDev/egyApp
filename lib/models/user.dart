@@ -17,7 +17,7 @@ class Guest {
     isAllowed = false;
   }
 
-  Guest.fromSnapshot(DataSnapshot snapshot)
+  Guest.fromGuestSnapshot(DataSnapshot snapshot)
       : key = snapshot.value["key"],
         phone = snapshot.value["phone"],
         stamp = snapshot.value["stamp"] ?? DateTime.now().toString(),
@@ -209,7 +209,7 @@ class NewMember {
       String areaId,
       String docType,
       String storeId) async {
-    final response = await http.put(
+    final response = await http.post(
         Uri.parse(
             'http://mywayegypt-api.azurewebsites.net/api/post-guest-membership/$user/$shipmentPlace/$areaId/$shipmentPlaceName/$docType/$storeId'),
         headers: {

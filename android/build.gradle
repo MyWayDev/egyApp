@@ -8,14 +8,23 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.google.gms:google-services:4.3.10'
+        classpath 'com.google.gms:google-services:4.3.15'
     }
+}
+plugins {
+
+ // id("com.google.gms.google-services") version "4.3.15" apply false
+
 }
 
 allprojects {
     repositories {
         google()
         mavenCentral()
+         //maven {
+           //  url 'https://maven.google.com'
+         //}
+        
     }
 }
 

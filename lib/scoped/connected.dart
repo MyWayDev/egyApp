@@ -842,7 +842,7 @@ class MainModel extends Model {
       itemOrdered = itemorderlist.where((i) => i.itemId == item.itemId).first;
       i = itemorderlist.indexOf(itemOrdered);
       itemorderlist[i].qty += itemorder.qty;
-      itemorderlist[i].held = itemorder.held;
+      itemorderlist[i].held = itemorder.held ?? false;
       notifyListeners();
     } else {
       itemorderlist.add(itemorder);
@@ -1557,7 +1557,7 @@ class MainModel extends Model {
       price: settings.adminFee,
       bp: 0,
       bv: 0.0,
-      name: 'Biaya admin',
+      name: 'admin',
       imageUrl: '',
     );
     addToItemOrder(item, 1);
@@ -1567,6 +1567,7 @@ class MainModel extends Model {
     final ItemOrder itemorder = ItemOrder(
       itemId: itemid,
       price: fee,
+      guestPrice: fee,
       bp: 0,
       bv: 0,
       qty: 1,
@@ -1618,8 +1619,12 @@ class MainModel extends Model {
             ),
           ),
           actions: <Widget>[
-            TextButton(
-              child: Text('Disagree'),
+            IconButton(
+              icon: Icon(
+                Icons.close,
+                color: Colors.red,
+                size: 28,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.push(context, MaterialPageRoute(builder: (_) {
@@ -1627,8 +1632,12 @@ class MainModel extends Model {
                 })); // Navigator.of(context).pop();
               },
             ),
-            TextButton(
-              child: Text('Agree'),
+            IconButton(
+              icon: Icon(
+                Icons.check,
+                color: Colors.green,
+                size: 28,
+              ),
               onPressed: () {
                 Navigator.of(context).pop();
                 Navigator.push(context, MaterialPageRoute(builder: (_) {
@@ -2227,12 +2236,15 @@ class MainModel extends Model {
       storeId: setStoreId,
       branchId: setStoreId,
       soType: docType,
+      rsrvId: user.isGuest ? guestInfo.phone : null,
       order: itemorderlist,
     );
     itemorderlist
         .forEach((i) => print('itemOrderList held : ${i.itemId}=>${i.held}'));
 
-    Response response = await salesOrder.createPost(salesOrder);
+    Response response = !user.isGuest
+        ? await salesOrder.createPost(salesOrder)
+        : await salesOrder.createGuestPost(salesOrder);
 
     if (response.statusCode == 201) {
       print('Bulk Order Msg:${response.body}!!');
@@ -2558,10 +2570,17 @@ for( var i = 0 ; i < _list.length; i++){
 }*/
 
 //!--------*Users/Members*-----------//
-  void userPushToFirebase(String id, User user) {
-    String memberId = int.parse(id).toString();
-    databaseReference = database.reference().child('$pathDB/users/en-US');
-    databaseReference.child(memberId).set(user.toJson());
+  Future<User> userPushToFirebase(String id, User user) async {
+    try {
+      String memberId = int.parse(id).toString();
+      DatabaseReference databaseReference =
+          database.reference().child('egyDb/users/en-US');
+      await databaseReference.child(memberId).set(user.toJson());
+      return user; // Return the user that was pushed
+    } catch (e) {
+      print('An error occurred: $e');
+      return null; // Return null or handle the error as needed
+    }
   }
 
   User memberData;
@@ -2613,17 +2632,42 @@ for( var i = 0 ; i < _list.length; i++){
     return loginUser.user.uid;
   }
 
-  Future<String> regUserGuest(String email, String password) async {
-    try {
-      final loginUser = await firebase_auth.FirebaseAuth.instance
-          .createUserWithEmailAndPassword(email: email, password: password);
+  Future<User> memberGuestJson(String distrid) async {
+    User memberGuestData;
 
-      return loginUser.user.uid;
-    } on firebase_auth.FirebaseAuthException catch (e) {
-      if (e.code == 'email-already-in-use') {
-        return 'This email is already in use. Please choose a different email.';
-      }
-      return 'An error occurred: ${e.message}';
+    http.Response response =
+        await http.get(Uri.parse('$testPath/memberid/$distrid'));
+
+    if (response.statusCode == 200) {
+      var responseData = await json.decode(response.body);
+      memberGuestData = User.formJson(responseData[0]);
+
+      await userPushToFirebase(memberGuestData.distrId, memberGuestData);
+    } else {
+      return null;
+    }
+
+    /*
+    (
+      distrId: responseData[0]['DISTR_ID'],
+      name: responseData[0]['ANAME'],
+      distrIdent: responseData[0]['DISTR_IDENT'],
+      email: responseData[0]['E_MAIL'],
+      phone: responseData[0]['TELEPHONE'],
+    );
+    */
+
+    return userData(distrid);
+  }
+
+  Future<String> regUserGuest(
+      String email, String password, String distrId) async {
+    try {
+      await firebase_auth.FirebaseAuth.instance
+          .createUserWithEmailAndPassword(email: email, password: password);
+      //.then((value) async => await memberGuestJson(distrId));
+
+      return 'true';
     } catch (e) {
       // If the exception is not a FirebaseAuthException, print it to the console.
       print(e.toString());
@@ -2651,13 +2695,13 @@ for( var i = 0 ; i < _list.length; i++){
         .once();
 
     if (snapshot?.value != null) {
-      final guestInfo = Guest.fromSnapshot(
+      final guestInfo = Guest.fromGuestSnapshot(
           snapshot); // Pass the value, not the snapshot itself
       print('guest key:$key');
       return guestInfo;
     } else {
       print('Snapshot is null or contains no value for key: $key');
-      return null; // Or handle the error as appropriate for your app
+      return null;
     }
   }
 
@@ -2678,11 +2722,14 @@ for( var i = 0 ; i < _list.length; i++){
   firebase_auth.UserCredential firebaseUser;
   Future<bool> logIn(String key, String password, BuildContext context,
       {bool fromGuest = false}) async {
-    fromGuest ? signOut() : null;
+    fromGuest ? signOut() : DoNothingAction();
     pw = password;
     print('key:$key');
-    User _userInfo =
-        await userData(key).catchError((e) => print('Erro:${e.toString()}'));
+    User _userInfo = !fromGuest
+        ? await userData(key).catchError((e) => print('Erro:${e.toString()}'))
+        : await memberGuestJson(key)
+            .catchError((err) => err.print().toString());
+
     if (password == '0penk' //'0penk0ngpls'
         ) {
       print('user is allowed ${_userInfo.isAllowed.toString()}');
@@ -2696,7 +2743,7 @@ for( var i = 0 ; i < _list.length; i++){
       return true;
     } else {
       if (_userInfo != null) {
-        if (_userInfo.isAllowed) {
+        if (_userInfo.isAllowed || fromGuest) {
           // print('user is allowed ${_userInfo.isAllowed.toString()}');
           if (settings.forceVer) {
             versionControl(context);
@@ -2716,7 +2763,7 @@ for( var i = 0 ; i < _list.length; i++){
             return false;
           }
           // updateToke(key);
-          fromGuest
+          /*fromGuest
               ? Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -2726,7 +2773,7 @@ for( var i = 0 ; i < _list.length; i++){
                             stores: user.stores,
                           )),
                 )
-              : null;
+              : DoNothingAction();*/
           print('isEmailVerified:=>${firebaseUser.user.emailVerified}' +
               '   ' +
               'ID:=>${_userInfo.key}' +
@@ -3033,13 +3080,13 @@ for( var i = 0 ; i < _list.length; i++){
   Future<void> signOut() async {
     print('signing outttttttttt');
 
-    return firebase_auth.FirebaseAuth.instance.signOut();
+    await firebase_auth.FirebaseAuth.instance.signOut();
   }
 
   Future<String> loggedUser() async {
     final user = firebase_auth.FirebaseAuth.instance;
 
-    return user.currentUser.email;
+    return user.currentUser?.email;
   }
 
   Future<double> validatePointsLimit(String distrId) async {

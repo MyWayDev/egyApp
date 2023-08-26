@@ -628,7 +628,7 @@ class ChatScreenState extends State<ChatScreen> {
 
   Widget buildImage(String image) {
     return PhotoView(
-      imageProvider: NetworkImage(image),
+      imageProvider: CachedNetworkImageProvider(image),
     );
   }
 
@@ -940,7 +940,7 @@ class ImageDetails extends StatelessWidget {
         child: Hero(
             tag: "",
             child: PhotoView(
-              imageProvider: NetworkImage(
+              imageProvider: CachedNetworkImageProvider(
                 image,
               ),
             )),

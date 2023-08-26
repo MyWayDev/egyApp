@@ -25,12 +25,12 @@ class ItemOrder {
   }
 
   double get totalPrice {
-    double _totalPrice = qty * price;
+    double _totalPrice = qty * price ?? 0.0;
     return _totalPrice ?? 0.0;
   }
 
   double get guestTotalPrice {
-    double _totalPrice = qty * guestPrice;
+    double _totalPrice = qty * guestPrice ?? 0.0;
     return _totalPrice ?? 0.0;
   }
 
@@ -200,7 +200,7 @@ class SalesOrder {
           "DS_SHIPMENT_COMP": courierId,
           "DS_SHIPMENT_PLACE": areaId,
           "RSRV_ID": rsrvId,
-          "AREMARKS": note + rsrvId, //!egyupdate AREMARKS FROM LREMARKS
+          "AREMARKS": note, // + rsrvId, //!egyupdate AREMARKS FROM LREMARKS
           "SHIPMTHD_L": bonusDeduc,
           // "SHIPMTHD_A": backOrder,
           //"LREMARKS": courierFee ?? '0',
@@ -212,11 +212,12 @@ class SalesOrder {
 
   String postOrderToJson(SalesOrder salesOrder) {
     final dyn = salesOrder.toJson();
+    print(json.encode(dyn));
     return json.encode(dyn);
   }
 
   Future<http.Response> createGuestPost(SalesOrder salesOrder) async {
-    final response = await http.put(
+    final response = await http.post(
         Uri.parse(
             'http://mywayegypt-api.azurewebsites.net/api/post-guest-salesorder'),
         headers: {
@@ -235,6 +236,8 @@ class SalesOrder {
           //HttpHeaders.authorizationHeader: ''
         },
         body: postOrderToJson(salesOrder));
+    print(salesOrder.toJson());
+
     return response;
   }
 }

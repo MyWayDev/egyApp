@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mor_release/scoped/connected.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -16,11 +17,11 @@ class LoginBanner extends StatelessWidget {
           decoration: BoxDecoration(
             image: DecorationImage(
               image: model.appLocked
-                  ? NetworkImage(
+                  ? CachedNetworkImageProvider(
                       'https://firebasestorage.googleapis.com/v0/b/mobile-coco.appspot.com/o/flamelink%2Fmedia%2Fsized%2F375_9999_100%2Flock-red.png?alt=media&token=da76137e-b12d-43f9-86ca-6f075808aa24',
                       scale: 3,
                     )
-                  : NetworkImage(this.bannerUrl,
+                  : CachedNetworkImageProvider(this.bannerUrl,
                       scale:
                           0.5), //AssetImage("assets/images/adbanner.png"), //!! need to change it to networkImagae & make it dynamic
               // fit: BoxFit.cover,

@@ -14,7 +14,7 @@ class TelephoneForm extends StatefulWidget {
 }
 
 class _TelephoneFormState extends State<TelephoneForm> {
-  final _formKey = GlobalKey<FormState>();
+  final _formGKey = GlobalKey<FormState>();
   final _controller = TextEditingController();
   bool matched = false;
   String lastEight;
@@ -83,7 +83,7 @@ class _TelephoneFormState extends State<TelephoneForm> {
     return ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
       return Form(
-        key: _formKey,
+        key: _formGKey,
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: <Widget>[
@@ -126,7 +126,7 @@ class _TelephoneFormState extends State<TelephoneForm> {
             ),
             IconButton(
                 onPressed: () async {
-                  if (_formKey.currentState.validate()) {
+                  if (_formGKey.currentState.validate()) {
                     await model
                         .guestLogIn(context)
                         .whenComplete(() async => await addGuest(widget.guest))
@@ -134,7 +134,7 @@ class _TelephoneFormState extends State<TelephoneForm> {
                             await model.guestDetails(widget.guest.phone))
                         .then((value) {
                       if (value) {
-                        _formKey.currentState.reset();
+                        _formGKey.currentState.reset();
                         Navigator.pop(context);
                         Navigator.push(
                           context,

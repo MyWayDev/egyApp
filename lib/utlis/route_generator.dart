@@ -32,11 +32,27 @@ class RouteGenerator {
 
   static Route<dynamic> _errorRoute(String name) {
     return MaterialPageRoute(
-      builder: (_) => Scaffold(
-        body: Center(
-          child: Text('ROUTE \n\n$name\n\nNOT FOUND'),
-        ),
-      ),
+      builder: (context) {
+        // Check for the specific name that should trigger the pop action.
+        if (name == '/otpApp') {
+          Future.delayed(Duration(seconds: 1), () {
+            if (Navigator.canPop(context)) {
+              Navigator.of(context).pop();
+            }
+          });
+        }
+
+        // Return a scaffold with the error message, and it will be displayed for 2 seconds.
+        return Scaffold(
+          body: Center(
+            child: Text(
+              'سوف يتم توجيهك إلى صفحة تسجيل الدخول، يرجى الانتظار',
+              textDirection: TextDirection.rtl,
+            ),
+            //Text('ROUTE \n\n$name\n\nNOT FOUND'),
+          ),
+        );
+      },
     );
   }
 }

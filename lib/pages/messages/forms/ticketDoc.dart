@@ -38,7 +38,7 @@ class _DocFormState extends State<DocForm> {
   List<TicketDoc> docs = [];
   var items = [];
 
-  final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
+  final GlobalKey<FormBuilderState> _formTKey = GlobalKey<FormBuilderState>();
 
   Ticket _newTicketData = Ticket(
       id: null,
@@ -90,7 +90,7 @@ class _DocFormState extends State<DocForm> {
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           content: FormBuilder(
-              key: _formKey,
+              key: _formTKey,
               //  autovalidate: true,
               child: Column(
                 children: <Widget>[
@@ -106,7 +106,7 @@ class _DocFormState extends State<DocForm> {
                             _newTicketData.docId = value;
                           },
                           //initialValue: docs[0].docId,
-                          // key: _formKey,
+                          // key: _formTKey,
                           enabled: true,
                           builder: (FormFieldState<dynamic> field) {
                             return ScopedModelDescendant<MainModel>(
@@ -163,7 +163,7 @@ class _DocFormState extends State<DocForm> {
                                               isloading(false);
                                               openItemChips(true);
                                               setState(() {
-                                                isValid = _formKey.currentState
+                                                isValid = _formTKey.currentState
                                                     .validate();
                                               });
                                             })
@@ -200,7 +200,7 @@ class _DocFormState extends State<DocForm> {
 
                           onChanged: (value) {
                             setState(() {
-                              isValid = _formKey.currentState.validate();
+                              isValid = _formTKey.currentState.validate();
                             });
 
                             print("chips is valued = $isValid");
@@ -378,7 +378,7 @@ class _DocFormState extends State<DocForm> {
                           ),
                           onChanged: (value) {
                             setState(() {
-                              isValid = _formKey.currentState.validate();
+                              isValid = _formTKey.currentState.validate();
                             });
                             print("comment is valued = $isValid");
                             _newTicketData.content = value;
@@ -406,10 +406,10 @@ class _DocFormState extends State<DocForm> {
               ),
               onPressed: () async {
                 Navigator.of(context, rootNavigator: true).pop();
-                //_formKey.currentState.fields['chips'].currentState.reset();
+                //_formTKey.currentState.fields['chips'].currentState.reset();
                 //openItemChips(false);
-                //  _formKey.currentState.fields['chips'].currentState.reset();
-                //  _formKey.currentState.fields['doc'].currentState.reset();
+                //  _formTKey.currentState.fields['chips'].currentState.reset();
+                //  _formTKey.currentState.fields['doc'].currentState.reset();
                 // openItemChips(true);
               },
             ),
@@ -421,9 +421,9 @@ class _DocFormState extends State<DocForm> {
                       size: 32,
                     ),
                     onPressed: () async {
-                      if (_formKey.currentState.validate()) {
+                      if (_formTKey.currentState.validate()) {
                         addDefaultValues();
-                        _formKey.currentState.save();
+                        _formTKey.currentState.save();
 
                         /*print("valid form = ${_newTicketData.openDate}}");
                         _newTicketData.items.forEach((i) =>

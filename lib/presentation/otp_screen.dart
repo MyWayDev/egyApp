@@ -1,10 +1,11 @@
 import 'package:colorful_safe_area/colorful_safe_area.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mor_release/presentation/widget/border_box.dart';
 import 'package:mor_release/presentation/widget/white_container.dart';
 
-import 'package:sms_autofill/sms_autofill.dart';
+//import 'package:sms_autofill/sms_autofill.dart'; //*auto google policy
 
 import '../global/utils/common_utils.dart';
 import '../screens/home_screen.dart';
@@ -26,21 +27,21 @@ class _OtpScreenState extends State<OtpScreen> {
 
   @override
   void initState() {
-    _listenOtp();
+    //  _listenOtp();
     super.initState();
   }
 
   @override
   void dispose() {
-    SmsAutoFill().unregisterListener();
+    // SmsAutoFill().unregisterListener();//*auto google policy
     print("Unregistered Listener");
     super.dispose();
   }
 
-  void _listenOtp() async {
-    await SmsAutoFill().listenForCode();
-    print("OTP Listen is called");
-  }
+  // void _listenOtp() async {
+  // await SmsAutoFill().listenForCode();//*auto google policy
+  //  print("OTP Listen is called");
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +77,7 @@ class _OtpScreenState extends State<OtpScreen> {
                               width: MediaQuery.of(context).size.width,
                               child: Column(
                                 children: [
-                                  PinFieldAutoFill(
+                                  /*   PinFieldAutoFill(
                                     currentCode: otpCode,
                                     decoration: const BoxLooseDecoration(
                                         radius: Radius.circular(12),
@@ -90,74 +91,75 @@ class _OtpScreenState extends State<OtpScreen> {
                                     onCodeSubmitted: (val) {
                                       print("OnCodeSubmitted : $val");
                                     },
-                                  )
-                                  // Expanded(
-                                  //   child: ListView.builder(
-                                  //       itemCount: 6,
-                                  //       scrollDirection: Axis.horizontal,
-                                  //       itemBuilder: (context, index) {
-                                  //         return BorderBox(
-                                  //             width: 55,
-                                  //             padding:
-                                  //                 const EdgeInsets.symmetric(
-                                  //                     horizontal: 21),
-                                  //             margin: true,
-                                  //             color: Colors.grey.shade200,
-                                  //             child: TextFormField(
-                                  //               textAlign: TextAlign.center,
-                                  //               initialValue: null,
-                                  //               keyboardType:
-                                  //                   TextInputType.number,
-                                  //               autofocus: true,
-                                  //               inputFormatters: [
-                                  //                 LengthLimitingTextInputFormatter(
-                                  //                     1),
-                                  //                 FilteringTextInputFormatter
-                                  //                     .digitsOnly
-                                  //               ],
-                                  //               validator: (value) {
-                                  //                 if (value!.isEmpty) {
-                                  //                   return "?";
-                                  //                 }
-                                  //               },
-                                  //               // maxLength: 1,
-                                  //               onChanged: (value) {
-                                  //                 if (value.length == 1) {
-                                  //                   if (index < 5) {
-                                  //                     FocusScope.of(context)
-                                  //                         .nextFocus();
-                                  //                   } else {
-                                  //                     FocusScope.of(context)
-                                  //                         .unfocus();
-                                  //                   }
-                                  //                 }
-                                  //                 if (value.isEmpty) {
-                                  //                   if (index > 0) {
-                                  //                     FocusScope.of(context)
-                                  //                         .previousFocus();
-                                  //                     return;
-                                  //                   }
-                                  //                 }
-                                  //                 otp += value;
-                                  //                 if (index == 5) {
-                                  //                   otpCode = otp;
-                                  //                   otp = "";
-                                  //                 }
-                                  //               },
-                                  //               style: const TextStyle(
-                                  //                   fontSize: 19,
-                                  //                   fontWeight:
-                                  //                       FontWeight.w600),
-                                  //               // textInputAction: TextInputAction.next,
-                                  //               decoration: InputDecoration(
-                                  //                   border: InputBorder.none,
-                                  //                   hintText: "0",
-                                  //                   hintStyle: TextStyle(
-                                  //                       color: Colors
-                                  //                           .grey.shade400)),
-                                  //             ));
-                                  //       }),
-                                  // ),
+                                  )*/ //*auto google policy
+                                  Expanded(
+                                    child: ListView.builder(
+                                        itemCount: 6,
+                                        scrollDirection: Axis.horizontal,
+                                        itemBuilder: (context, index) {
+                                          return BorderBox(
+                                              width: 55,
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 21),
+                                              margin: true,
+                                              color: Colors.grey.shade200,
+                                              child: TextFormField(
+                                                textAlign: TextAlign.center,
+                                                initialValue: null,
+                                                keyboardType:
+                                                    TextInputType.number,
+                                                autofocus: true,
+                                                inputFormatters: [
+                                                  LengthLimitingTextInputFormatter(
+                                                      1),
+                                                  FilteringTextInputFormatter
+                                                      .digitsOnly
+                                                ],
+                                                validator: (value) {
+                                                  if (value.isEmpty) {
+                                                    return "?";
+                                                  }
+                                                  return value;
+                                                },
+                                                // maxLength: 1,
+                                                onChanged: (value) {
+                                                  if (value.length == 1) {
+                                                    if (index < 5) {
+                                                      FocusScope.of(context)
+                                                          .nextFocus();
+                                                    } else {
+                                                      FocusScope.of(context)
+                                                          .unfocus();
+                                                    }
+                                                  }
+                                                  if (value.isEmpty) {
+                                                    if (index > 0) {
+                                                      FocusScope.of(context)
+                                                          .previousFocus();
+                                                      return;
+                                                    }
+                                                  }
+                                                  otp += value;
+                                                  if (index == 5) {
+                                                    otpCode = otp;
+                                                    otp = "";
+                                                  }
+                                                },
+                                                style: const TextStyle(
+                                                    fontSize: 19,
+                                                    fontWeight:
+                                                        FontWeight.w600),
+                                                // textInputAction: TextInputAction.next,
+                                                decoration: InputDecoration(
+                                                    border: InputBorder.none,
+                                                    hintText: "0",
+                                                    hintStyle: TextStyle(
+                                                        color: Colors
+                                                            .grey.shade400)),
+                                              ));
+                                        }),
+                                  ),
                                 ],
                               ),
                             ),

@@ -13,6 +13,9 @@ class ItemCard extends StatelessWidget {
   final bool isGuest;
 
   ItemCard(this.itemData, this.index, {this.isGuest = false});
+  printPromo() {
+    print('${itemData[index].promoImageUrl}');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +36,15 @@ class ItemCard extends StatelessWidget {
                         children: <Widget>[
                           Image(
                               image: CachedNetworkImageProvider(
-                            itemData[index].imageUrl ??
-                                '', //'https://firebasestorage.googleapis.com/v0/b/mobile-coco.appspot.com/o/flamelink%2Fmedia%2F${itemData[index].image[0].toString()}_${itemData[index].itemId}.png?alt=media&token=274fc65f-8295-43d5-909c-e2b174686439',
+                            itemData[index].imageUrl ?? '',
+
+                            //'https://firebasestorage.googleapis.com/v0/b/mobile-coco.appspot.com/o/flamelink%2Fmedia%2F${itemData[index].image[0].toString()}_${itemData[index].itemId}.png?alt=media&token=274fc65f-8295-43d5-909c-e2b174686439',
                             scale: 2.78,
                           )),
+
                           // : Container(),
-                          itemData[index].promoImageUrl == '' ||
-                                  itemData[index].promoImageUrl == null
+
+                          itemData[index].promoImageUrl == " "
                               ? Container()
                               : Positioned(
                                   left: 3.0,
@@ -47,13 +52,13 @@ class ItemCard extends StatelessWidget {
                                       opacity: 0.70,
                                       child: Image(
                                           image: CachedNetworkImageProvider(
-                                        itemData[index].promoImageUrl ??
-                                            '', //  'https://firebasestorage.googleapis.com/v0/b/mobile-coco.appspot.com/o/flamelink%2Fmedia%2F1540155801359_tag-50.png?alt=media',
+                                        itemData[index]
+                                            .promoImageUrl, //  'https://firebasestorage.googleapis.com/v0/b/mobile-coco.appspot.com/o/flamelink%2Fmedia%2F1540155801359_tag-50.png?alt=media',
                                         scale: 1.1,
                                       )
 
                                           //
-                                          )))
+                                          ))),
                         ],
                       ),
                     ),

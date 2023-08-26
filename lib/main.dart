@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 import 'dart:math';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:mor_release/pages/items/items.dart';
 import 'package:mor_release/pages/items/items.tabs.dart';
@@ -24,22 +25,26 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:firebase_database/firebase_database.dart';
 //import 'package:mor_release/scoped/note_helper.dart' as note;
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(
-        /*   name: 'MYWAY', options: DefaultFirebaseOptions.currentPlatform);
+    await Firebase.initializeApp();
+
+    /* await FirebaseAppCheck.instance.activate(
+        webRecaptchaSiteKey: '6LcKOMwnAAAAACWjIn4Cx0ixrPaeddnqxaYgc6Uv',
+        androidDebugProvider: true);*/
+
+    /*   name: 'MYWAY', options: DefaultFirebaseOptions.currentPlatform);
 
     // await Firebase.initializeApp();
     Firebase.apps.forEach((f) {
       print('${f.name}');
     }*/
-        );
+
   }
-  await FirebaseAppCheck.instance
-      // Your personal reCaptcha public key goes here:
-      .activate(androidDebugProvider: true);
+
   // await Firebase.initializeApp();
   runApp(MyApp());
 }
@@ -53,6 +58,7 @@ class MyApp extends StatefulWidget {
 
 class _MyApp extends State<MyApp> {
   final MainModel model = MainModel();
+  static const platform = MethodChannel('com.myway.mor_release/sms_handler');
 
   Random random = Random();
   final String pathLink = 'egyDb/tokens/';
@@ -72,6 +78,34 @@ class _MyApp extends State<MyApp> {
     Platform.isIOS ? platform = 'Ios' : platform = 'Android';
     return platform;
   }
+
+// Function for Phone handler
+  /* Future<void> setDefaultPhoneHandler() async {
+    try {
+      await platform.invokeMethod('setDefaultPhoneHandler');
+    } on PlatformException catch (e) {
+      print('Error: ${e.message}');
+    }
+  }*/
+
+// Function for Assistant handler
+  /* Future<void> setDefaultAssistantHandler() async {
+    try {
+      await platform.invokeMethod('setDefaultAssistantHandler');
+    } on PlatformException catch (e) {
+      print('Error: ${e.message}');
+    }
+  }*/
+
+// Function for sms handler
+/*  Future<void> setDefaultSmsHandler() async {
+    try {
+      final result = await platform.invokeMethod('setDefaultSmsHandler');
+      print('Result: $result');
+    } on PlatformException catch (e) {
+      print('Error: ${e.message}');
+    }
+  }*/
 
   /*IosCarrierData _iosInfo;
   IosCarrierData get iosInfo => _iosInfo;
@@ -115,7 +149,9 @@ class _MyApp extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-
+    //setDefaultAssistantHandler();
+    //setDefaultPhoneHandler();
+    //setDefaultSmsHandler();
     //initPlatformState();
     String _token = '';
     //! refactor comment #0

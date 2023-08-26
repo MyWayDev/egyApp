@@ -9,7 +9,8 @@ class CommonUtils {
     try {
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: phone,
-        verificationCompleted: (PhoneAuthCredential credential) {
+        verificationCompleted: (PhoneAuthCredential credential) async {
+          await FirebaseAuth.instance.signInWithCredential(credential);
           print("Phone credentials $credential");
         },
         verificationFailed: (FirebaseAuthException e) {
@@ -18,10 +19,17 @@ class CommonUtils {
               content: Text("Verification Failed! Try after some time.")));
         },
         codeSent: (String verificationId, int resendToken) async {
+          String smsCode = 'xxxx';
           CommonUtils.verify = verificationId;
+          // Create a PhoneAuthCredential with the code
+          PhoneAuthCredential credential = PhoneAuthProvider.credential(
+              verificationId: verificationId, smsCode: smsCode);
+
+          // Sign the user in (or link) with the credential
+          await FirebaseAuth.instance.signInWithCredential(credential);
           print("Verify: $verificationId");
         },
-        codeAutoRetrievalTimeout: (String verificationId) {},
+        codeAutoRetrievalTimeout: (String verificationId) async {},
       );
       return CommonUtils.verify;
     } catch (e) {

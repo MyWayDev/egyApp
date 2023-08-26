@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:badges/badges.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:groovin_material_icons/groovin_material_icons.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -100,7 +101,7 @@ class _StockDialog extends State<StockDialog> {
                                     minRadius: 40,
                                     maxRadius: 40,
                                     backgroundColor: Colors.grey[200],
-                                    backgroundImage: NetworkImage(
+                                    backgroundImage: CachedNetworkImageProvider(
                                         itemData[index].imageUrl,
                                         scale: 0.3),
                                   ),

@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mor_release/models/gift_pack.dart';
 import 'package:mor_release/scoped/connected.dart';
@@ -38,7 +39,7 @@ class _GiftCard extends State<GiftCard> {
               child: CircleAvatar(
                 radius: 22.0,
                 backgroundColor: Colors.white,
-                backgroundImage: NetworkImage(
+                backgroundImage: CachedNetworkImageProvider(
                   widget.giftData[widget.index].imageUrl,
                 ),
                 child: IconButton(

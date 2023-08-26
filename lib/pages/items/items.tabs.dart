@@ -62,19 +62,21 @@ class ItemsTabs extends StatelessWidget {
                                 pdfUrl: model.settings.pdfUrl,
                               ))*/
                     }),
-                ListTile(
-                    leading: Icon(Icons.password),
-                    title: Text('تحديث كلمة السر'),
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (_) => RestCredintials(),
-                      );
-                      //print(model.settings.pdfUrl);
+                !model.user.isGuest
+                    ? ListTile(
+                        leading: Icon(Icons.password),
+                        title: Text('تحديث كلمة السر'),
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (_) => RestCredintials(),
+                          );
+                          //print(model.settings.pdfUrl);
 
-                      // Navigator.push(context,
-                      //     MaterialPageRoute(builder: (context) => EmailVerify()));
-                    }),
+                          // Navigator.push(context,
+                          //     MaterialPageRoute(builder: (context) => EmailVerify()));
+                        })
+                    : Container(),
                 ListTile(
                     leading: Icon(Icons.backspace),
                     title: Text('خروج'),
@@ -89,7 +91,7 @@ class ItemsTabs extends StatelessWidget {
               appBar: AppBar(
                 ///////////////////////Top Tabs Navigation Widget//////////////////////////////
                 title: TabBar(
-                  indicatorColor: Colors.grey[400],
+                  indicatorColor: Colors.black,
                   indicatorWeight: 2,
                   indicatorSize: TabBarIndicatorSize.tab,
                   tabs: <Widget>[

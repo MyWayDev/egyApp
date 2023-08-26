@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:intl/intl.dart' as inter;
 import 'package:badges/badges.dart';
 import 'package:flutter/material.dart';
@@ -758,13 +759,17 @@ Widget _orderExp(BuildContext context, MainModel model,
                             //   trailing: _buildIconButton(context, i, model),
                             // contentPadding: EdgeInsets.only(top: 10.0),
                             leading: CircleAvatar(
-                              minRadius: 36,
-                              maxRadius: 36,
-                              backgroundColor: Colors.purple[50],
-                              backgroundImage: NetworkImage(
+                                minRadius: 36,
+                                maxRadius: 36,
+                                backgroundColor: Colors.purple[50],
+                                backgroundImage: CachedNetworkImageProvider(
+                                  model.itemorderlist[i].img,
+                                  scale: 2.78,
+                                )) /*NetworkImage(
                                 model.itemorderlist[i].img,
-                              ),
-                            ),
+                              )*/
+                            ,
+
                             title: Row(children: <Widget>[
                               Container(
                                 child: Flexible(
@@ -1081,7 +1086,7 @@ class _BulkGiftsAndPromosState extends State<BulkGiftsAndPromos> {
                                   child: CircleAvatar(
                                     radius: 24,
                                     backgroundColor: Colors.grey[300],
-                                    backgroundImage: NetworkImage(
+                                    backgroundImage: CachedNetworkImageProvider(
                                       widget.model.giftorderList[i].imageUrl,
                                     ),
                                     child: IconButton(
@@ -1148,7 +1153,7 @@ class _BulkGiftsAndPromosState extends State<BulkGiftsAndPromos> {
                                   child: CircleAvatar(
                                     radius: 24,
                                     backgroundColor: Colors.grey[300],
-                                    backgroundImage: NetworkImage(
+                                    backgroundImage: CachedNetworkImageProvider(
                                       widget.model.promoOrderList[i].imageUrl,
                                     ),
                                     child: IconButton(

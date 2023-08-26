@@ -41,15 +41,21 @@ class _StoreFloatState extends State<StoreFloat> with TickerProviderStateMixin {
     _animationController1.repeat();
     super.initState();
     super.initState();
-    DatabaseReference guestRef = FirebaseDatabase.instance
-        .reference()
-        .child('egyDb/guest/en-US')
-        .child(widget.model.guestInfo.phone);
+    if (widget.model.user.isGuest) {
+      DatabaseReference guestRef = FirebaseDatabase.instance
+          .reference()
+          .child('egyDb/guest/en-US')
+          .child(widget.model.guestInfo.phone);
 
-    subscription = guestRef.onValue.listen((Event event) {
-      widget.model.guestInfo = Guest.fromSnapshot(event.snapshot);
-      //print('Data updated: ${widget.model.guestInfo.toJson()}');
-    });
+      guestRef.once().then((DataSnapshot snapshot) {
+        if (snapshot.value != null) {
+          subscription = guestRef.onValue.listen((Event event) {
+            widget.model.guestInfo = Guest.fromGuestSnapshot(event.snapshot);
+            //print('Data updated: ${widget.model.guestInfo.toJson()}');
+          });
+        }
+      });
+    }
   }
 
   @override
@@ -67,7 +73,7 @@ class _StoreFloatState extends State<StoreFloat> with TickerProviderStateMixin {
       alignment: Alignment.center,
       children: <Widget>[
         _showNeedHelpButton(),
-        widget.model.user.isGuest && !widget.model.guestInfo.isAllowed
+        widget.model.user.isGuest && !widget.model.guestInfo.isAllowed ?? true
             ? SlideTransition(
                 position: _offsetAnimation1,
                 child: ElevatedButton(
@@ -92,8 +98,12 @@ class _StoreFloatState extends State<StoreFloat> with TickerProviderStateMixin {
                     onPressed: () {
                       dialogDistrPoints(context, widget.model)
                           .whenComplete(() async {
-                        await widget.model
-                            .guestActivated(widget.model.guestInfo.phone);
+                        if (widget.model.user.isGuest) {
+                          !widget.model.guestInfo.isAllowed ?? true
+                              ? await widget.model
+                                  .guestActivated(widget.model.guestInfo.phone)
+                              : DoNothingAction();
+                        }
                       });
                     },
                     child: Text(

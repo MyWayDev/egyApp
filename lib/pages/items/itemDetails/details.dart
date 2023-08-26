@@ -22,7 +22,7 @@ List _child(List<Item> imgList, BuildContext context, Item item) {
               borderRadius: BorderRadius.all(Radius.circular(5.0)),
               child: GestureDetector(
                 onTap: () {
-                  Navigator.of(context).pop();
+                  /*   Navigator.of(context).pop();
                   // model.getIndex(imgList[index]);
                   Navigator.push(
                       context,
@@ -36,7 +36,7 @@ List _child(List<Item> imgList, BuildContext context, Item item) {
                             imgList[index],
                             model.getCaouselItems(imgList[index])),
                         // ItemDetails(widget.itemData[widget.index])
-                      ));
+                      ));*/
                 },
                 child: Stack(children: <Widget>[
                   Image(

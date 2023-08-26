@@ -68,15 +68,16 @@ class _BottomNavGuest extends State<BottomNavGuest>
 
           // set the tab bar as the child of bottom navigation bar
           child: TabBar(
-            indicatorSize: TabBarIndicatorSize.tab,
-            indicatorWeight: 4,
+            indicatorSize: TabBarIndicatorSize.label,
+            indicatorWeight: 1,
             indicatorColor: Colors.pink[700],
             tabs: <Tab>[
               Tab(
+                height: 0.1,
                 // set icon to the tab
                 icon: Icon(
                   Icons.home,
-                  size: 32,
+                  size: 1,
                   color: Colors.pink[700],
                 ),
               ),

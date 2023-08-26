@@ -1,4 +1,5 @@
 import 'package:badges/badges.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mor_release/scoped/connected.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +65,7 @@ class _PromoPage extends State<PromoPage> {
                               trailing: CircleAvatar(
                                 radius: 28,
                                 backgroundColor: Colors.grey[300],
-                                backgroundImage: NetworkImage(
+                                backgroundImage: CachedNetworkImageProvider(
                                   model.promoOrderList[i].imageUrl,
                                 ),
                               ),

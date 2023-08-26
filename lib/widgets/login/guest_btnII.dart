@@ -5,10 +5,8 @@ import 'package:mor_release/bottom_nav_guest.dart';
 import 'package:mor_release/models/user.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:carrier_info/carrier_info.dart';
 import 'dart:io' show Platform;
 import '../../scoped/connected.dart';
-import 'package:current_location/current_location.dart';
 
 class GuestButton extends StatefulWidget {
   final Guest guest;
@@ -48,7 +46,6 @@ class _GuestButtonState extends State<GuestButton> {
     } else {
       _verified = widget.guest.isAllowed;
     }
-    // TODO: implement initState
     super.initState();
   }
 
@@ -92,8 +89,7 @@ class _GuestButtonState extends State<GuestButton> {
                     ],
                   ),
                   onPressed: () async {
-                    await initPlatformState().then((value) => !value
-                        ? showDialog(
+                    /* ?/* showDialog(
                             context: context,
                             builder: (_) => AlertDialog(
                               actions: <Widget>[
@@ -130,19 +126,21 @@ class _GuestButtonState extends State<GuestButton> {
                                 overflow: TextOverflow.visible,
                               ),
                             ),
+                          )*/
+                        :*/
+                    // await initPlatformState().then((value) => !value
+                    _verified
+                        ? Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BottomNavGuest(
+                                      '6',
+                                      isAdmin: model.user.isAdmin,
+                                      stores: model.user.stores,
+                                      isGuest: true,
+                                    )),
                           )
-                        : _verified
-                            ? Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BottomNavGuest(
-                                          '6',
-                                          isAdmin: model.user.isAdmin,
-                                          stores: model.user.stores,
-                                          isGuest: true,
-                                        )),
-                              )
-                            : Navigator.pushNamed(context, '/otpApp'));
+                        : Navigator.pushNamed(context, '/otpApp'); //);
 
                     //
                     /* Navigator.push(context, MaterialPageRoute(builder: (_) {

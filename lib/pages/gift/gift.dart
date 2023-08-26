@@ -2,6 +2,7 @@ import 'package:badges/badges.dart';
 import 'package:mor_release/scoped/connected.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class GiftPage extends StatefulWidget {
   @override
@@ -64,7 +65,7 @@ class _GiftPage extends State<GiftPage> {
                               trailing: CircleAvatar(
                                 radius: 28,
                                 backgroundColor: Colors.grey[300],
-                                backgroundImage: NetworkImage(
+                                backgroundImage: CachedNetworkImageProvider(
                                   model.giftorderList[i].imageUrl,
                                 ),
                               ),

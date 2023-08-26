@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:mor_release/bottom_nav.dart';
@@ -487,7 +488,7 @@ class _SaveDialog extends State<SaveDialog> {
           ),
           trailing: CircleAvatar(
             backgroundColor: Colors.grey[100],
-            backgroundImage: NetworkImage(
+            backgroundImage: CachedNetworkImageProvider(
               getOrderList(model)[i].img,
             ),
           ),

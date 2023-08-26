@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:mor_release/presentation/widget/border_box.dart';
 import 'package:mor_release/presentation/widget/white_container.dart';
 
-import 'package:sms_autofill/sms_autofill.dart';
+//import 'package:sms_autofill/sms_autofill.dart'; //*auto google policy
 
 import '../global/utils/common_utils.dart';
 import 'otp_screen.dart';
@@ -19,7 +19,7 @@ class OtpLoginScreen extends StatefulWidget {
 }
 
 class _OtpLoginScreenState extends State<OtpLoginScreen> {
-  final _formKey = GlobalKey<FormState>();
+  final _formOTPKey = GlobalKey<FormState>();
   final _phoneController = TextEditingController();
   final _countryCodeController = TextEditingController();
   Color focusBorderColor = Colors.black12;
@@ -78,7 +78,7 @@ class _OtpLoginScreenState extends State<OtpLoginScreen> {
                                     color: Colors.grey.shade200,
                                     height: 60,
                                     child: Form(
-                                      key: _formKey,
+                                      key: _formOTPKey,
                                       child: Row(
                                         children: [
                                           BorderBox(
@@ -226,8 +226,9 @@ class _OtpLoginScreenState extends State<OtpLoginScreen> {
                     setState(() {
                       isLoaded = true;
                     });
-                    if (_formKey.currentState.validate()) {
-                      var appSignature = await SmsAutoFill().getAppSignature;
+                    if (_formOTPKey.currentState.validate()) {
+                      //     var appSignature = await SmsAutoFill()
+                      //       .getAppSignature; //*auto google policy
                       OtpLoginScreen.verify =
                           await CommonUtils.firebasePhoneAuth(
                               phone: _countryCodeController.text +
@@ -243,7 +244,6 @@ class _OtpLoginScreenState extends State<OtpLoginScreen> {
                                   builder: (context) => OtpScreen(
                                       phone: _countryCodeController.text +
                                           _phoneController.text)));
-                          print("App Signature : $appSignature");
                         });
                       });
                     }

@@ -4,10 +4,9 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:otp_text_field/otp_text_field.dart';
-import 'package:otp_text_field/style.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:sms_autofill/sms_autofill.dart';
-import 'package:telephony/telephony.dart';
+//import 'package:sms_autofill/sms_autofill.dart';
+//import 'package:telephony/telephony.dart';
 import '../bottom_nav_guest.dart';
 import '../models/user.dart';
 import '../pages/user/login_screen.dart';
@@ -15,7 +14,7 @@ import '../scoped/connected.dart';
 import '../utlis/helpers.dart';
 import '../widgets/otpLoader.dart';
 import '../widgets/pinPointField.dart';
-import 'home_screen.dart';
+import 'package:pinput/pinput.dart';
 
 class VerifyPhoneNumberScreen extends StatefulWidget {
   static const id = 'VerifyPhoneNumberScreen';
@@ -39,7 +38,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen>
   String otp = "";
   bool isLoaded = false;
   OtpFieldController otpbox = OtpFieldController(); //!smslistener
-  Telephony telephony = Telephony.instance; //!smslistener
+  //Telephony telephony = Telephony.instance; //!smslistener
   StreamSubscription<Event> subscription;
   Guest newGuest;
 
@@ -57,7 +56,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen>
   @override
   void initState() {
     //! smslistener ..
-    telephony.listenIncomingSms(
+    /* telephony.listenIncomingSms(
       onNewMessage: (SmsMessage message) {
         print(message.address); //+977981******67, sender nubmer
         print(message.body); //Your OTP code is 34567
@@ -79,7 +78,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen>
         } else {}
       },
       listenInBackground: false,
-    );
+    );*/
     //! smslistener;
     //  _getSignature();
     // _listenSmsCode(); //! deprecated smslistner
@@ -91,9 +90,12 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen>
         .child(_telephone());
 
     subscription = guestRef.onValue.listen((Event event) {
-      newGuest = Guest.fromSnapshot(event.snapshot);
+      newGuest = Guest.fromGuestSnapshot(event.snapshot);
       //print('Data updated: ${widget.model.guestInfo.toJson()}');
     });
+
+    //print('Data updated: ${widget.model.guestInfo.toJson()}');
+
     super.initState();
   }
 
@@ -101,8 +103,9 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen>
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
     scrollController.dispose();
-    SmsAutoFill().unregisterListener();
+    //SmsAutoFill().unregisterListener(); //*auto google policy
     subscription?.cancel();
+
     super.dispose();
   }
 
@@ -127,9 +130,12 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen>
     );
   }
 
-  bool newGuestToModel(MainModel model) {
-    model.guestInfo = newGuest;
-    return true;
+  Future<bool> newGuestToModel(MainModel model) async {
+    setState(() {
+      model.guestInfo = newGuest;
+    });
+
+    return model.guestInfo != null ? true : false;
   }
 
   String _telephone() {
@@ -168,7 +174,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen>
       return SafeArea(
         child: FirebasePhoneAuthHandler(
           phoneNumber: widget.phoneNumber,
-          signOutOnSuccessfulVerification: false,
+          signOutOnSuccessfulVerification: true,
 
           //sendOtpOnInitialize: true,
           linkWithExistingUser: false,
@@ -186,31 +192,37 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen>
                   : 'تم التحقق من كلمة المرور ',
             );
 
-            showSnackBar('تم التحقق من رقم الهاتف بنجاح');
+            showSnackBar('تم التحقق من رقم الهاتف.',
+                duration: Duration(seconds: 2));
 
             log(
               VerifyPhoneNumberScreen.id,
               msg: 'تسجيل الدخول ناجح:: ${userCredential.user?.uid}',
             );
-            await FirebasePhoneAuthHandler.signOut(context).then((_) async =>
-                await addGuest(_guestModel(_uid)).then((value) async => value
-                    ? newGuestToModel(model)
-                        ? Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => BottomNavGuest(
-                                      '6',
-                                      isAdmin: model.user.isAdmin,
-                                      stores: model.user.stores,
-                                      isGuest: true,
-                                    )),
-                          )
-                        : Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => LoginScreen()),
-                          )
-                    : print('notlog')));
+            // await FirebasePhoneAuthHandler.signOut(context).then((_) async {
+            await addGuest(_guestModel(_uid)).then((value) async {
+              if (value) {
+                await newGuestToModel(model).then((value) => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BottomNavGuest(
+                          '6',
+                          isAdmin: model.user.isAdmin,
+                          stores: model.user.stores,
+                          isGuest: true,
+                        ),
+                      ),
+                    ));
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => LoginScreen(),
+                  ),
+                );
+              }
+            });
+            //   });
 
             /* await FirebasePhoneAuthHandler.signOut(context).then(
                 (value) async => await model
@@ -260,6 +272,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen>
               // handle other error codes
               default:
                 showSnackBar('خطأ في التحقق');
+
               // handle error further if needed
             }
           },
@@ -348,8 +361,8 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen>
                               ),
                             ],
                           ),
-                        //const SizedBox(height: 15),
-                        /* const Center(
+                        /* const SizedBox(height: 15),
+                        const Center(
                           child: Text(
                             'أدخل رمز التحقق',
                             textDirection: TextDirection.rtl,
@@ -367,7 +380,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen>
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                OTPTextField(
+                                /*  OTPTextField(
                                   controller: otpbox,
                                   length: 6,
                                   width: MediaQuery.of(context).size.width,
@@ -381,11 +394,12 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen>
 
                                     await controller.verifyOtp(pin);
                                   },
-                                ),
+                                ),*/
                               ],
                             )),
                         //! Deprecated smslistner ..
-                        /*  PinFieldAutoFill(
+
+                        /* PinFieldAutoFill(
                             currentCode: otpCode,
                             codeLength: 6,
                             autoFocus: true,
@@ -399,7 +413,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen>
                                   const FixedColorBuilder(Colors.black),
                             )),*/
                         //! Deprecated smslistner;
-                        /* PinInputField(
+                        PinInputField(
                           length: 6,
                           onFocusChange: (hasFocus) async {
                             if (hasFocus) await _scrollToBottomOnKeyboardOpen();
@@ -415,7 +429,7 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen>
                               // will call onLoginFailed or onError callbacks with the error
                             }
                           },
-                        ),*/
+                        ),
                       ],
                     ),
             );

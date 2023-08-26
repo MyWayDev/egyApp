@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:mor_release/models/gift_pack.dart';
 import 'package:mor_release/scoped/connected.dart';
@@ -38,7 +39,7 @@ class _PromoCard extends State<PromoCard> {
               child: CircleAvatar(
                 radius: 22.0,
                 backgroundColor: Colors.white,
-                backgroundImage: NetworkImage(
+                backgroundImage: CachedNetworkImageProvider(
                   widget.promoData[widget.index].imageUrl,
                 ),
                 child: IconButton(
