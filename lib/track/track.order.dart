@@ -13,8 +13,9 @@ import 'package:http/http.dart' as http;
 
 class TrackOrder extends StatefulWidget {
   final String userId;
+  final bool isGuest;
 
-  TrackOrder(this.userId);
+  TrackOrder(this.userId, this.isGuest);
   @override
   State<StatefulWidget> createState() {
     return _TrackOrder();
@@ -64,8 +65,11 @@ class _TrackOrder extends State<TrackOrder> {
   void _getSorders(String userId) async {
     firstSorder = [];
 
-    final http.Response response = await http.get(Uri.parse(
-        'http://mywayegypt-api.azurewebsites.net/api/userpending/$userId'));
+    final http.Response response = !widget.isGuest
+        ? await http.get(Uri.parse(
+            'http://mywayegypt-api.azurewebsites.net/api/userpending/$userId'))
+        : await http.get(Uri.parse(
+            'http://mywayegypt-api.azurewebsites.net/api/get-guest-user-pending/$userId'));
     if (response.statusCode == 200 && firstSorder.length == 0) {
       print('getSorder ok');
       List<dynamic> soList = json.decode(response.body);

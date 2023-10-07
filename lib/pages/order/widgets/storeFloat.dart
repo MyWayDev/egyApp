@@ -40,18 +40,17 @@ class _StoreFloatState extends State<StoreFloat> with TickerProviderStateMixin {
         new AnimationController(vsync: this, duration: Duration(seconds: 1));
     _animationController1.repeat();
     super.initState();
-    super.initState();
     if (widget.model.user.isGuest) {
       DatabaseReference guestRef = FirebaseDatabase.instance
           .reference()
           .child('egyDb/guest/en-US')
-          .child(widget.model.guestInfo.phone);
+          .child(widget.model.guestInfo?.phone);
 
       guestRef.once().then((DataSnapshot snapshot) {
         if (snapshot.value != null) {
           subscription = guestRef.onValue.listen((Event event) {
             widget.model.guestInfo = Guest.fromGuestSnapshot(event.snapshot);
-            //print('Data updated: ${widget.model.guestInfo.toJson()}');
+            print('Data updated: ${widget.model.guestInfo.toJson()}');
           });
         }
       });
@@ -101,7 +100,7 @@ class _StoreFloatState extends State<StoreFloat> with TickerProviderStateMixin {
                         if (widget.model.user.isGuest) {
                           !widget.model.guestInfo.isAllowed ?? true
                               ? await widget.model
-                                  .guestActivated(widget.model.guestInfo.phone)
+                                  .guestActivated(widget.model.guestInfo?.phone)
                               : DoNothingAction();
                         }
                       });

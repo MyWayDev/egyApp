@@ -1,3 +1,4 @@
+import 'package:circular_menu/circular_menu.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:groovin_material_icons/groovin_material_icons.dart';
@@ -55,7 +56,7 @@ class _ItemsPage extends State<ItemsPage> with SingleTickerProviderStateMixin {
     super.initState();
     databaseReference = database.reference().child(path);
     Query query = databaseReference.orderByChild('catalogue').equalTo(true);
-    widget.model.getStores();
+    //widget.model.getStores();
     widget.model.getAreasList();
     // !TODO ADD QUERY TO FILTER PRODUCTS NOT IN CATALOGE..
     subAdd = query.onChildAdded.listen(_onItemEntryAdded);
@@ -102,7 +103,8 @@ class _ItemsPage extends State<ItemsPage> with SingleTickerProviderStateMixin {
 
   String type;
   bool isSelected = false;
-
+  String _colorName = 'No';
+  Color _color = Colors.black;
 /*Widget build(BuildContext context) {
   return new FutureBuilder(
     future: getgiftImageUrl(),
@@ -205,6 +207,7 @@ class _ItemsPage extends State<ItemsPage> with SingleTickerProviderStateMixin {
                             ],
                           )
                         : Container(),
+
                     // MyBlinkingButton()
                     StoreFloat(model)
                   ],
@@ -228,34 +231,41 @@ class _ItemsPage extends State<ItemsPage> with SingleTickerProviderStateMixin {
             body: Stack(children: <Widget>[
               Column(
                 children: <Widget>[
-                  Container(
-                    height: 58,
-                    color: Theme.of(context).primaryColorLight,
-                    child: Card(
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.search,
-                          size: 22.0,
-                        ),
-                        title: TextField(
-                          controller: controller,
-                          decoration: InputDecoration(
-                            hintText: "",
-                            border: InputBorder.none,
-                          ),
-                          // style: TextStyle(fontSize: 18.0),
-                          onChanged: onSearchTextChanged,
-                        ),
-                        trailing: IconButton(
-                          alignment: AlignmentDirectional.centerEnd,
-                          icon: Icon(Icons.cancel, size: 20.0),
-                          onPressed: () {
-                            controller.clear();
-                            onSearchTextChanged('');
-                          },
-                        ),
-                      ),
-                    ),
+                  Row(
+                    children: [
+                      Flexible(
+                          fit: FlexFit.loose,
+                          flex: 6,
+                          child: Container(
+                            height: 58,
+                            color: Theme.of(context).primaryColorLight,
+                            child: Card(
+                              child: ListTile(
+                                leading: Icon(
+                                  Icons.search,
+                                  size: 22.0,
+                                ),
+                                title: TextField(
+                                  controller: controller,
+                                  decoration: InputDecoration(
+                                    hintText: "",
+                                    border: InputBorder.none,
+                                  ),
+                                  // style: TextStyle(fontSize: 18.0),
+                                  onChanged: onSearchTextChanged,
+                                ),
+                                trailing: IconButton(
+                                  alignment: AlignmentDirectional.centerEnd,
+                                  icon: Icon(Icons.cancel, size: 20.0),
+                                  onPressed: () {
+                                    controller.clear();
+                                    onSearchTextChanged('');
+                                  },
+                                ),
+                              ),
+                            ),
+                          )),
+                    ],
                   ),
                   userType()
                       ? Expanded(

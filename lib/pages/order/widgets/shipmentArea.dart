@@ -100,10 +100,14 @@ class _ShipmentAreaState extends State<ShipmentPlace>
     print(
         'Global distrPoint:${widget.model.distrPoint}: local distrPoint:$distrpoint');
     widget.memberId == null
-        ? shipmentAreas = await widget.model
-            .getShipmentAreas(widget.model.userInfo.distrId, distrpoint)
-        : shipmentAreas =
-            await widget.model.getShipmentAreas(widget.memberId, distrpoint);
+        ? shipmentAreas = await widget.model.getShipmentAreas(
+            widget.model.userInfo.distrId, distrpoint,
+            isGuest: widget.model.userInfo.isGuest ?? false,
+            phone: widget.model.guestInfo?.phone)
+        : shipmentAreas = await widget.model.getShipmentAreas(
+            widget.memberId, distrpoint,
+            isGuest: widget.model.userInfo.isGuest ?? false,
+            phone: widget.model.guestInfo?.phone);
 
     if (shipmentAreas.length > 0) {
       setState(() {

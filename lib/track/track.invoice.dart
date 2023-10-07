@@ -10,7 +10,8 @@ import 'package:http/http.dart' as http;
 
 class TrackInvoice extends StatefulWidget {
   final String userId;
-  TrackInvoice(this.userId);
+  final bool isGuest;
+  TrackInvoice(this.userId, this.isGuest);
   @override
   State<StatefulWidget> createState() {
     return _TrackInvoice();
@@ -29,8 +30,11 @@ class _TrackInvoice extends State<TrackInvoice> {
 
   void _getInvoices(String userId) async {
     firstInvoice = [];
-    final http.Response response = await http.get(Uri.parse(
-        'http://mywayegypt-api.azurewebsites.net/api/userinvoices/$userId')); // sample distrid =>$userId
+    final http.Response response = !widget.isGuest
+        ? await http.get(Uri.parse(
+            'http://mywayegypt-api.azurewebsites.net/api/userinvoices/$userId'))
+        : await http.get(Uri.parse(
+            'http://mywayegypt-api.azurewebsites.net/api/get-guest-user-invoices/$userId')); // sample distrid =>$userId
     if (response.statusCode == 200 && firstInvoice.length == 0) {
       print('getInvoice ok');
       List<dynamic> invoiceList = json.decode(response.body);

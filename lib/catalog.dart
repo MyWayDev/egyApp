@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+/*import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
 /// Represents Catalog for Navigation
@@ -42,4 +42,4 @@ class _Catalog extends State<Catalog> {
       ),
     );
   }
-}
+}*/

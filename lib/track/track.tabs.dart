@@ -60,8 +60,13 @@ class TrackTabs extends StatelessWidget {
               preferredSize: Size.fromHeight(45.0), child: _appBar),
           body: TabBarView(
             children: <Widget>[
-              TrackOrder(model.userInfo.distrId),
-              TrackInvoice(model.userInfo.distrId),
+              !model.userInfo.isGuest
+                  ? TrackOrder(model.userInfo.distrId, model.userInfo.isGuest)
+                  : TrackOrder(model.guestInfo?.phone, model.userInfo.isGuest),
+              !model.userInfo.isGuest
+                  ? TrackInvoice(model.userInfo.distrId, model.userInfo.isGuest)
+                  : TrackInvoice(
+                      model.guestInfo?.phone, model.userInfo.isGuest),
               // ExpansionTileSample() // SwitchPage(ItemsPage()),
               //OrderPage(), //SwitchPage(OrderPage()),
               //ProductList(),

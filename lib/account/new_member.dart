@@ -26,10 +26,16 @@ class Id {
   String id;
   String err;
 
-  Id({this.id, this.err});
+  Id({this.code, this.id, this.err});
 
-  factory Id.fromJson(Map<String, dynamic> json) {
-    return Id(id: json['id'], err: json['errMsg']);
+  factory Id.fromJson(Map<String, dynamic> json, [int statusCode]) {
+    if (json == null) return Id();
+
+    return Id(
+      code: statusCode ?? json['code'] is int ? json['code'] : null,
+      id: json['id'] is String ? json['id'] : null,
+      err: json['errMsg'] is String ? json['errMsg'] : null,
+    );
   }
 }
 
@@ -448,7 +454,10 @@ class _NewMemberPage extends State<NewMemberPage> {
                                                                               model.setStoreId,
                                                                               model)) {
                                                                             await _saveNewMember(model.userInfo.distrId, model.docType, model.setStoreId, isGuest: widget.isGuest).then((body) async =>
-                                                                                showReview(context, body));
+                                                                                {
+                                                                                  print('${body.code}' + '${body.err}'),
+                                                                                  showReview(context, body)
+                                                                                });
                                                                             // await runGuestCode(model); /*.then((value) => mobileRegForm(context, model));*/
                                                                           }
                                                                         },
@@ -644,7 +653,7 @@ class _NewMemberPage extends State<NewMemberPage> {
                                                   style:
                                                       TextStyle(fontSize: 12),
                                                   initialValue: widget.isGuest
-                                                      ? model.guestInfo.phone
+                                                      ? model.guestInfo?.phone
                                                       : '',
                                                   readOnly: widget.isGuest
                                                       ? false //! true
@@ -1070,6 +1079,15 @@ class _NewMemberPage extends State<NewMemberPage> {
     );
   }
 
+  bool isValidJson(String source) {
+    try {
+      json.decode(source);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
   Future<Id> _saveNewMember(String user, String docType, String storeId,
       {bool isGuest: false}) async {
     Id body;
@@ -1097,7 +1115,11 @@ class _NewMemberPage extends State<NewMemberPage> {
             docType,
             storeId);
     if (response.statusCode == 201) {
-      body = Id.fromJson(json.decode(response.body));
+      if (isValidJson(response.body)) {
+        body = Id.fromJson(json.decode(response.body));
+      } else {
+        print("Invalid JSON response: ${response.body}");
+      }
 
       isGuest
           ? await widget.model
@@ -1123,7 +1145,11 @@ class _NewMemberPage extends State<NewMemberPage> {
         print("body.id${body.id}");
       }
     } else {
-      body = Id.fromJson(json.decode(response.body));
+      if (isValidJson(response.body)) {
+        body = Id.fromJson(json.decode(response.body));
+      } else {
+        print("Invalid JSON response: ${response.body}");
+      }
 
       if (kDebugMode) {
         print("body.err${body.err}");
@@ -1137,7 +1163,7 @@ class _NewMemberPage extends State<NewMemberPage> {
     return body;
   }
 
-// ! 99299682	29407180101791	6281212207735
+// ! 99299682	 29407180101791	6281212207735
   Future<bool> showReview(BuildContext context, Id body) {
     return showDialog(
         context: context,
@@ -1157,7 +1183,7 @@ class _NewMemberPage extends State<NewMemberPage> {
                             color: Colors.red,
                             size: 24,
                           ))
-                      : Container()
+                      : Container() //all commented lines belongs to guest model view.
                 ],
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0)),
@@ -1171,17 +1197,20 @@ class _NewMemberPage extends State<NewMemberPage> {
                       Column(
                         children: <Widget>[
                           Text(
+                            //0124568111
                             body.code == 201
-                                ? '${widget.model.guestInfo.phone}:' +
-                                    ' ' +
-                                    'كلمة المرور' +
-                                    ' ' +
-                                    body.id +
-                                    ' ' +
-                                    'رقم العضويه'
+                                ? widget.model.userInfo.isGuest
+                                    ? '${widget.model.guestInfo?.phone}:' +
+                                        ' ' +
+                                        'كلمة المرور' +
+                                        ' ' +
+                                        body.id +
+                                        ' ' +
+                                        'رقم العضويه'
+                                    : ' ' + body.id + '  ' + ':رقم العضويه'
                                 : body.err,
                             style: TextStyle(
-                                fontSize: 16.0,
+                                fontSize: 14.0,
                                 color: Colors.pink[900],
                                 fontWeight: FontWeight.bold),
                           ),
@@ -1211,17 +1240,24 @@ class _NewMemberPage extends State<NewMemberPage> {
                               isloading(false);
                               // Navigator.of(context).pushReplacementNamed('/login');
 
+                            } else {
+                              isloading(false);
+                              Navigator.of(context).pop();
+                              Navigator.pushNamedAndRemoveUntil(
+                                  context, '/bottomnav', (_) => false);
                             }
                             /*   _newMemberFormKey.currentState.reset();
-                        await widget.model
-                            .logIn(
+                                await widget.model
+                                   .logIn(
                                 body.id, widget.model.guestInfo.phone, context,
                                 fromGuest: true)
-                            .then((value) => Navigator.of(context).pop());*/
+                                  .then((value) => Navigator.of(context).pop());*/
 
                             //
 
                           } else {
+                            isloading(false);
+
                             Navigator.of(context).pop();
                             Navigator.pushNamedAndRemoveUntil(
                                 context, '/bottomnav', (_) => false);
@@ -1238,7 +1274,7 @@ class _NewMemberPage extends State<NewMemberPage> {
                                   size: 24,
                                 ),
                               )
-                            : Container(),
+                            : Container(), //all commented three line belonge to guest pop up message
                       ),
                     ],
                   ),

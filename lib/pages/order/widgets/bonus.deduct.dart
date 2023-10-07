@@ -113,7 +113,7 @@ class _BonusDeductState extends State<BonusDeduct> {
                                             onPressed: () {
                                               widget.model.distrBonusList
                                                   .add(userBonus);
-                                              Navigator.of(context).pop();
+                                              Navigator.canPop(context);
                                             }),
                                         trailing: IconButton(
                                           icon: Icon(
@@ -122,7 +122,7 @@ class _BonusDeductState extends State<BonusDeduct> {
                                             color: Colors.red,
                                           ),
                                           onPressed: () =>
-                                              Navigator.of(context).pop(),
+                                              Navigator.canPop(context),
                                         ),
                                       ),
                                     ),
@@ -310,12 +310,12 @@ class _BonusDeductState extends State<BonusDeduct> {
                                 _nodeData.distrId + '    ' + _nodeData.name;
 
                         if (_nodeData.distrId == '00000000') {
-                          Navigator.of(context).pop();
+                          Navigator.canPop(context);
                           showDialog(
                               context: context,
                               builder: (_) => nodeDialog(context));
                         } else {
-                          Navigator.of(context).pop();
+                          Navigator.canPop(context);
                           setState(() {
                             widget.model.bulkDistrId = _nodeData.distrId;
                           });

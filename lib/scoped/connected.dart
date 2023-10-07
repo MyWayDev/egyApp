@@ -16,6 +16,7 @@ import 'package:mor_release/models/item.dart';
 import 'package:mor_release/models/item.order.dart';
 import 'package:mor_release/models/lock.dart';
 import 'package:mor_release/models/sales.order.dart';
+import 'package:mor_release/utlis/helpers.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:mor_release/models/user.dart';
 import 'dart:convert';
@@ -807,6 +808,17 @@ class MainModel extends Model {
     return input;
   }
 
+  int guestCount = 0;
+  Future countGuest() async {
+    http.Response response = await http.get(Uri.parse(
+        'https://mywayegypt-api.azurewebsites.net/api/get-spot-report-count/${userInfo.distrId}'));
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonMap = json.decode(response.body);
+
+      guestCount = jsonMap['DATA_COUNT'];
+    }
+  }
 //!--------*Orders*---------//
 
 //!--------*
@@ -1728,13 +1740,19 @@ class MainModel extends Model {
     int exPromoItemBpTotal = 0;
     List<ItemOrder> exList = [];
     for (var i in settings.exItems) {
-      itemorderlist
-          .forEach((f) => i.toString() == f.itemId ? exList.add(f) : null);
+      print('exitems => ' '${i.toString()}');
+
+      itemorderlist.forEach((f) {
+        i.toString() == f.itemId ? exList.add(f) : null;
+      });
     }
+    exList.forEach((i) {
+      print(i.itemId);
+    });
     for (ItemOrder i in exList) {
       exPromoItemBpTotal += i.bp * i.qty;
     }
-
+    print('exitem BP=> ' '$exPromoItemBpTotal');
     return exPromoItemBpTotal * 100 / totalBp;
   }
 
@@ -2236,7 +2254,7 @@ class MainModel extends Model {
       storeId: setStoreId,
       branchId: setStoreId,
       soType: docType,
-      rsrvId: user.isGuest ? guestInfo.phone : null,
+      rsrvId: user.isGuest ? guestInfo?.phone : null,
       order: itemorderlist,
     );
     itemorderlist
@@ -2342,11 +2360,15 @@ for(var area in areas){
     return shipmentAreas;
   }
 
-  Future<List<ShipmentArea>> getShipmentAreas(String distrId, int point) async {
+  Future<List<ShipmentArea>> getShipmentAreas(String distrId, int point,
+      {bool isGuest = false, String phone = ''}) async {
     List<ShipmentArea> shipmentAreas = [];
     List<ShipmentArea> validShipmentAreas = [];
-    final response = await http
-        .get(Uri.parse('$testPath/get_shipment_places_by_distr_id/$distrId'));
+    final response = !isGuest
+        ? await http.get(
+            Uri.parse('$testPath/get_shipment_places_by_distr_id/$distrId'))
+        : await http.get(Uri.parse('$testPath/get-guest-address/$phone'));
+
     if (response.statusCode == 200) {
       final _shipmentArea = json.decode(response.body) as List;
       shipmentAreas =
@@ -2454,9 +2476,9 @@ for(var area in areas){
             100 *
             courierFeez;
 
-        print('discount:${courierDiscount.abs()}');
+        //  print('discount:${courierDiscount.abs()}');
       } else {
-        print(courierFeez);
+        //print(courierFeez);
       }
     }
 

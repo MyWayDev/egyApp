@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:easy_container/easy_container.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +8,7 @@ import 'package:groovin_material_icons/groovin_material_icons.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:mor_release/models/user.dart';
 import 'package:mor_release/screens/verify_phone_number_screen.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 //import 'package:sms_autofill/sms_autofill.dart'; //*auto google policy
 import '../bottom_nav_guest.dart';
@@ -29,6 +33,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
   Guest guest;
   final _formKey = GlobalKey<FormState>();
   final String pathDB = "egyDb/";
+  String token = '';
   String _telephone() {
     return phoneNumber.replaceAll("+", "");
   }
@@ -44,20 +49,47 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
     return guest;
   }
 
+  Future<String> getFilePath() async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
+  Future<String> readData() async {
+    try {
+      final path = await getFilePath();
+      File file = File('$path/token.json');
+      String data = await file.readAsString();
+      Map<String, dynamic> jsonData = json.decode(data);
+      token = jsonData['Phone'].toString();
+      return jsonData['Phone'].toString();
+    } catch (e) {
+      print("Error: $e");
+
+      return null;
+    }
+  }
+
   Future<bool> _activeGuest(MainModel model) async {
     guest = await model.guestDetails(_telephone()).then((value) {
       if (value != null) {
-        guest = value;
-        model.guestInfo = guest;
+        if (token == _telephone()) {
+          guest = value;
+          model.guestInfo = guest;
+        } else {
+          showSnackBar("رقم الهاتف غير متطاب");
+        }
       }
       return value;
     });
 
-    return guest != null ? true : false; // Return false if guest is null
+    return (guest != null && token == _telephone())
+        ? true
+        : false; // Return false if guest is null
   }
 
   @override
   void initState() {
+    readData();
     super.initState();
   }
 
@@ -119,6 +151,7 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                         } else {
                           //  var appSignature =
                           //  await SmsAutoFill().getAppSignature;
+
                           await model.guestLogIn(context).then((value) async =>
                               value
                                   ? await _activeGuest(model)
@@ -140,6 +173,8 @@ class _AuthenticationScreenState extends State<AuthenticationScreen> {
                                                 arguments: phoneNumber,
                                               ))
                                   : null);
+
+                          //  showSnackBar("رقم الهاتف غير متطاب");
 
                           //get firebase guest data and match phone number if exists
 

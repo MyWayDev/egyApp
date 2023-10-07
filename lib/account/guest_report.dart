@@ -13,18 +13,18 @@ import 'package:mor_release/widgets/color_loader_2.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
 
-class NewReport extends StatefulWidget {
+class GuestReport extends StatefulWidget {
   final String userId;
   final String apiUrl;
-  NewReport(this.userId, this.apiUrl);
+  GuestReport(this.userId, this.apiUrl);
 
   State<StatefulWidget> createState() {
-    return _NewReport();
+    return _GuestReport();
   }
 }
 
 @override
-class _NewReport extends State<NewReport> {
+class _GuestReport extends State<GuestReport> {
   List<Member> members;
   List<Member> searchResult = [];
   TextEditingController controller = new TextEditingController();
@@ -114,9 +114,9 @@ class _NewReport extends State<NewReport> {
                 ),
               ),
               Card(
-                  color: Colors.greenAccent[100],
+                  color: Colors.purple[100],
                   child: ListTile(
-                      title: Text('${members.length}: عدد الاعضاء الجدد ',
+                      title: Text('${members.length}: عدد  اشتراكات الضيوف ',
                           textAlign: TextAlign.right,
                           textDirection: TextDirection.ltr,
                           style: const TextStyle(
@@ -133,14 +133,20 @@ class _NewReport extends State<NewReport> {
   Future<List<Member>> memberDetailsReportSummary(String distrid) async {
     members = [];
     isloading(true);
-    http.Response response =
-        await http.get(Uri.parse('${widget.apiUrl}/newmembers/$distrid'));
+
+    http.Response response = await http
+        .get(Uri.parse('${widget.apiUrl}/get-spot-report-data/$distrid'));
+
     if (response.statusCode == 200) {
-      final _summary = json.decode(response.body) as List;
-      members = _summary.map((m) => Member.formJsonNew(m)).toList();
+      final Map<String, dynamic> decodedJson = json.decode(response.body);
+      final List<dynamic> _summary = decodedJson['DATA'];
+
+      members = _summary.map((m) => Member.formJsonGuest(m)).toList();
     }
+
     isloading(false);
     members.forEach((m) => print(m.distrId));
+
     return members;
   }
 
@@ -176,28 +182,11 @@ class _NewReport extends State<NewReport> {
                                     color: Colors.green[500]))
                           ],
                         ),
-                        trailing: Column(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              '${searchResult[i].perBp.toInt()}: النقاط الشخصية',
-                              textDirection: TextDirection.ltr,
-                              textAlign: TextAlign.right,
-                            ),
-                          ],
+                        trailing: Container(
+                          width: 10,
                         ),
-                        title: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(searchResult[i].telephone,
-                                style: const TextStyle(
-                                    fontSize: 12, fontWeight: FontWeight.bold)),
-                            Text(searchResult[i].areaName,
-                                style: const TextStyle(fontSize: 13)),
-                          ],
+                        title: Container(
+                          width: 10,
                         ),
                       ),
                     );
@@ -210,55 +199,40 @@ class _NewReport extends State<NewReport> {
                         return Card(
                           elevation: 15,
                           color: Colors.green[50],
-                          child: ListTile(
-                            leading: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                Text(members[i].joinDate,
-                                    style: TextStyle(fontSize: 12)),
-                                Text(members[i].distrId,
-                                    style: TextStyle(fontSize: 12)),
-                                Text(
-                                    members[i].name.length >= 16
-                                        ? '..' +
-                                            members[i].name.substring(0, 14)
-                                        : members[i].name,
-                                    textDirection: TextDirection.ltr,
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(
-                                        fontSize: 11,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green[500]))
-                              ],
-                            ),
-                            trailing: Column(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Text(
-                                  '${members[i].perBp.toInt()}: النقاط الشخصية',
-                                  style: TextStyle(fontSize: 11),
-                                  textDirection: TextDirection.ltr,
-                                  textAlign: TextAlign.right,
-                                ),
-                              ],
-                            ),
-                            title: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                Text(members[i].telephone,
-                                    style: const TextStyle(
-                                        fontSize: 12,
-                                        fontWeight: FontWeight.bold)),
-                                Text(members[i].areaName,
-                                    style: const TextStyle(fontSize: 11)),
-                              ],
-                            ),
-                          ),
+                          child: SingleChildScrollView(
+                              child: Column(children: [
+                            ListTile(
+                              leading: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  Text(members[i].joinDate,
+                                      style: TextStyle(fontSize: 12)),
+                                  Text(members[i].distrId,
+                                      style: TextStyle(fontSize: 12)),
+                                ],
+                              ),
+                              trailing: Container(
+                                width: 10,
+                              ),
+                              title: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  Text(members[i].name,
+                                      style: const TextStyle(
+                                          color: Colors.purple,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold)),
+                                  Text(members[i].telephone,
+                                      style: const TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                            )
+                          ])),
                         );
                       },
                     )

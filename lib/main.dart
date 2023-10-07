@@ -145,10 +145,23 @@ class _MyApp extends State<MyApp> {
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
   }*/
+  void initStoresDefaluts() async {
+    await model.getStores().then((value) {
+      setState(() {
+        model.setStoreId = value.first.storeId;
+        model.distrPoint = value.first.region;
+        model.distrPointName = value.first.name;
+        model.docType = value.first.docType;
+        model.setSpotId = value.first.spotId;
+      });
+    });
+  }
 
   @override
   void initState() {
     super.initState();
+    initStoresDefaluts();
+
     //setDefaultAssistantHandler();
     //setDefaultPhoneHandler();
     //setDefaultSmsHandler();
@@ -302,6 +315,7 @@ class _MyApp extends State<MyApp> {
     setState(() {});
   }
 
+//01061973
   @override
   Widget build(BuildContext context) {
     model.settingsData();

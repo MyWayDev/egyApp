@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_phone_auth_handler/firebase_phone_auth_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:otp_text_field/otp_text_field.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:scoped_model/scoped_model.dart';
 //import 'package:sms_autofill/sms_autofill.dart';
 //import 'package:telephony/telephony.dart';
@@ -14,7 +15,9 @@ import '../scoped/connected.dart';
 import '../utlis/helpers.dart';
 import '../widgets/otpLoader.dart';
 import '../widgets/pinPointField.dart';
-import 'package:pinput/pinput.dart';
+//import 'package:pinput/pinput.dart';
+import 'dart:convert';
+import 'dart:io';
 
 class VerifyPhoneNumberScreen extends StatefulWidget {
   static const id = 'VerifyPhoneNumberScreen';
@@ -152,13 +155,39 @@ class _VerifyPhoneNumberScreenState extends State<VerifyPhoneNumberScreen>
     return _guest;
   }
 
+  Future<String> getFilePath() async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
+
+  Future<File> saveData(String phone) async {
+    try {
+      final path = await getFilePath();
+      print("tokenFile Path = >" + path);
+      File file = File('$path/token.json');
+
+      return file.writeAsString(
+        json.encode({'Phone': phone}),
+        flush: true, // Flush ensures all data is written immediately
+        mode: FileMode
+            .write, // FileMode.write will overwrite the file if it already exists
+      );
+    } catch (e) {
+      print("Error: $e");
+      return null;
+    }
+  }
+
   Future<bool> addGuest(Guest guest) async {
     try {
       final FirebaseDatabase database = FirebaseDatabase.instance;
       final String pathDB = "egyDb/";
       DatabaseReference databaseReference =
           database.reference().child('$pathDB/guest/en-US');
-      await databaseReference.child(_telephone()).set(guest.toJson());
+      await databaseReference
+          .child(_telephone())
+          .set(guest.toJson())
+          .whenComplete(() => saveData(_telephone()));
 
       return true; // Return true on success
     } catch (e) {

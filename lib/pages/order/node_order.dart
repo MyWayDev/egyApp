@@ -316,6 +316,7 @@ class _BuildCourierOrderState extends State<BuildCourierOrder> {
                           child: Column(
                             children: <Widget>[
                               CourierOrder(
+                                  widget.model,
                                   shipment,
                                   widget.model.shipmentArea,
                                   widget.distrId,

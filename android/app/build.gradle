@@ -50,9 +50,8 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
         applicationId "com.myway.mor_release"
-        minSdkVersion 33
+        minSdkVersion 26
         targetSdkVersion 33 // flutter.targetSdkVersion
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName

@@ -50,8 +50,8 @@ class _MemberOrder extends State<MemberOrder> {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         return shipment.length > 0 && model.docType == 'CR'
-            ? CourierOrder(shipment, widget.areaId, model.userInfo.distrId,
-                model.userInfo.distrId)
+            ? CourierOrder(model, shipment, widget.areaId,
+                model.userInfo.distrId, model.userInfo.distrId)
             : CashOrder(model.userInfo.distrId, model.userInfo.distrId);
       },
     );

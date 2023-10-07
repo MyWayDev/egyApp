@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:badges/badges.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:groovin_material_icons/groovin_material_icons.dart';
+import 'package:http/http.dart' as http;
 import 'package:mor_release/account/new_member.dart';
 import 'package:mor_release/models/ticket.dart';
 import 'package:mor_release/pages/items/items.tabs.dart';
@@ -17,9 +20,13 @@ class BottomNav extends StatefulWidget {
   final List stores;
   final bool isGuest;
 
-  const BottomNav(this.user,
-      {Key key, this.isAdmin: false, this.stores: const [], this.isGuest})
-      : super(key: key);
+  const BottomNav(
+    this.user, {
+    Key key,
+    this.isAdmin: false,
+    this.stores: const [],
+    this.isGuest,
+  }) : super(key: key);
   @override
   State<StatefulWidget> createState() {
     return _BottomNav();
@@ -74,6 +81,7 @@ class _BottomNav extends State<BottomNav> with SingleTickerProviderStateMixin {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
+      // model.countGuest();
       return Scaffold(
         resizeToAvoidBottomInset: false, // Appbar
         /*appBar: new AppBar(
@@ -128,15 +136,27 @@ class _BottomNav extends State<BottomNav> with SingleTickerProviderStateMixin {
                     size: 32, color: Colors.pink[700]),
               ),
               Tab(
-                icon: Icon(GroovinMaterialIcons.book_open,
-                    size: 32, color: Colors.pink[700]),
-              ),
+                  icon: Badge(
+                showBadge: model.guestCount == 0 ? false : true,
+                animationDuration: const Duration(microseconds: 450),
+                animationType: BadgeAnimationType.scale,
+                badgeColor: Colors.deepPurple[300],
+                badgeContent: Text(
+                  '${model.guestCount > 0 ? model.guestCount : 0}',
+                  style: TextStyle(color: Colors.white),
+                ),
+                child: Icon(
+                  GroovinMaterialIcons.book_open_page_variant,
+                  size: 32.0,
+                  color: Colors.pink[700],
+                ),
+              )),
               Tab(
                   icon: Badge(
                 showBadge: _msgCount == 0 ? false : true,
                 animationDuration: const Duration(microseconds: 450),
                 animationType: BadgeAnimationType.scale,
-                badgeColor: Colors.deepPurple[300],
+                badgeColor: Colors.pink,
                 badgeContent: Text(
                   '${_msgCount > 0 ? _msgCount : 0}',
                   style: TextStyle(color: Colors.white),

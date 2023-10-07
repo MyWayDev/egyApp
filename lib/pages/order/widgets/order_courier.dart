@@ -12,12 +12,14 @@ import 'package:mor_release/scoped/connected.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class CourierOrder extends StatefulWidget {
+  final MainModel model;
   final List<dynamic> couriers;
   final String areaId;
   final String distrId;
   final String userId;
 
-  CourierOrder(this.couriers, this.areaId, this.distrId, this.userId);
+  CourierOrder(
+      this.model, this.couriers, this.areaId, this.distrId, this.userId);
 
   @override
   State<StatefulWidget> createState() {
@@ -42,7 +44,7 @@ class _CourierOrder extends State<CourierOrder> {
 
   @override
   void initState() {
-    getinit();
+    getinit(widget.model);
 
     super.initState();
   }
@@ -52,9 +54,16 @@ class _CourierOrder extends State<CourierOrder> {
     super.dispose();
   }
 
-  void getinit() async {
+  void getinit(MainModel model) async {
     shipment = widget.couriers;
+    stateValue = shipment.first;
     areaId = widget.areaId;
+
+    courierFee = await model.courierServiceFee(
+        shipment.first.id.toString(), areaId, model.orderWeight());
+    courierDiscount = 0.0;
+    var cd = await model.getCourierDiscount(model.orderBp(), courierFee);
+    courierDiscount = cd;
   }
 
   TextEditingController controller = new TextEditingController();
@@ -141,7 +150,8 @@ class _CourierOrder extends State<CourierOrder> {
                         ? Container(
                             height: 62,
                             child: FormField<Courier>(
-                              initialValue: _chosenValue = null,
+                              initialValue:
+                                  shipment.first, //_chosenValue = null,
                               onSaved: (val) => _chosenValue = val,
                               validator: (val) => (val == null)
                                   ? 'Please choose a Courier'

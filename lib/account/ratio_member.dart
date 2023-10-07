@@ -287,7 +287,8 @@ class _RatioReport extends State<RatioReport> {
                                   mainAxisSize: MainAxisSize.max,
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: <Widget>[
-                                    Text('${members[i].distrId}'),
+                                    Text('${members[i].distrId}',
+                                        style: TextStyle(fontSize: 12)),
                                     Text(
                                         members[i].name.length >= 14
                                             ? members[i].name.substring(0, 14) +
@@ -296,11 +297,11 @@ class _RatioReport extends State<RatioReport> {
                                         textAlign: TextAlign.right,
                                         textDirection: TextDirection.rtl,
                                         style: TextStyle(
-                                            fontSize: 13,
+                                            fontSize: 11,
                                             color: Colors.orange[900])),
                                     Text('${members[i].telephone}',
                                         style: TextStyle(
-                                          fontSize: 13,
+                                          fontSize: 11,
                                         )),
                                   ],
                                 ),
@@ -312,23 +313,23 @@ class _RatioReport extends State<RatioReport> {
                                     Text(
                                         '${members[i].ratio.toInt().toString()}%',
                                         style: TextStyle(
-                                          fontSize: 13,
+                                          fontSize: 11,
                                         )),
                                     members[i].count21 != 0
                                         ? Text(
                                             '${members[i].count21.toString()}: عدد اليدر',
                                             style: TextStyle(
-                                              fontSize: 13,
+                                              fontSize: 11,
                                             ))
                                         : Text(''),
                                     Text('${members[i].areaName}',
                                         style: TextStyle(
-                                          fontSize: 13,
+                                          fontSize: 11,
                                         )),
                                   ],
                                 ),
                                 trailing: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     mainAxisSize: MainAxisSize.max,
                                     children: <Widget>[
                                       Text(
@@ -336,28 +337,29 @@ class _RatioReport extends State<RatioReport> {
                                           textDirection: TextDirection.ltr,
                                           textAlign: TextAlign.right,
                                           style: TextStyle(
-                                            fontSize: 13,
+                                            fontSize: 11,
                                           )),
                                       Text(
                                           '${members[i].grpBp.toInt().toString()}: نقاط االمجموعة',
                                           textAlign: TextAlign.right,
                                           textDirection: TextDirection.ltr,
                                           style: TextStyle(
-                                            fontSize: 13,
+                                            fontSize: 11,
                                           )),
                                       members[i].grpBp == members[i].totBp
-                                          ? Text('')
+                                          ? Text('',
+                                              style: TextStyle(fontSize: 11))
                                           : Text(
                                               '${members[i].totBp.toInt().toString()}: اجمالى النقاط',
                                               textDirection: TextDirection.ltr,
                                               textAlign: TextAlign.right,
                                               style: TextStyle(
-                                                fontSize: 13,
+                                                fontSize: 11,
                                               ))
                                     ]),
                               ),
                             ) ??
-                            '';
+                            Container();
                       },
                     )
                   : Container());

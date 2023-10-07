@@ -123,7 +123,7 @@ class ItemCard extends StatelessWidget {
                                         itemData,
                                         index,
                                         isGuest: isGuest,
-                                      )
+                                      ),
                                     ],
                                   ),
                                 ],

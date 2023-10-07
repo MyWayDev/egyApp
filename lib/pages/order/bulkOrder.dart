@@ -70,8 +70,8 @@ class _BulkOrderState extends State<BulkOrder> {
       body: ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
           return shipment.length > 0
-              ? CourierOrder(shipment, widget.areaId, model.userInfo.distrId,
-                  model.userInfo.distrId)
+              ? CourierOrder(model, shipment, widget.areaId,
+                  model.userInfo.distrId, model.userInfo.distrId)
               : Container();
         },
       ),

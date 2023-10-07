@@ -5,13 +5,13 @@ import 'package:mor_release/catalog.dart';
 import 'package:mor_release/pages/items/items.dart';
 import 'package:mor_release/pages/order/order.dart';
 import 'package:mor_release/pages/user/login_screen.dart';
-//import 'package:mor_release/pages/user/email_verify.dart';
 import 'package:mor_release/scoped/connected.dart';
 import 'package:mor_release/track/track.tabs.dart';
 import 'package:mor_release/widgets/login/rest_Credintials.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:badges/badges.dart';
 
+import '../../cat.dart';
 import '../../main.dart';
 
 //////////////////////////////////////////////////////
@@ -19,8 +19,6 @@ import '../../main.dart';
 ///!notification badge over icon example code
 
 class ItemsTabs extends StatelessWidget {
-  ItemsTabs();
-
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<MainModel>(
@@ -56,11 +54,13 @@ class ItemsTabs extends StatelessWidget {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                              builder: (context) => Catalog(
+                              builder:
+                                  (context) => /* Catalog(
                                     pdfUrl: model.settings.pdfUrl,
-                                  ))); /* Cat(
-                                pdfUrl: model.settings.pdfUrl,
-                              ))*/
+                                  )));*/
+                                      Cat(
+                                        model.settings.pdfUrl,
+                                      )));
                     }),
                 !model.user.isGuest
                     ? ListTile(

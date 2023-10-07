@@ -424,7 +424,8 @@ class _AddAddressState extends State<AddAddress> {
                               ? distrId = model.userInfo.distrId
                               : distrId = widget.memberId;
 
-                          if (_validateAndSave(distrId)) {
+                          if (_validateAndSave(distrId,
+                              phone: model.guestInfo?.phone)) {
                             print(_newAddressForm
                                 .postAddressToJson(_newAddressForm));
                             await _saveAddress(model, distrId);
@@ -440,7 +441,7 @@ class _AddAddressState extends State<AddAddress> {
           );
   }
 
-  bool _validateAndSave(String memberId) {
+  bool _validateAndSave(String memberId, {String phone = ''}) {
     final addressData = _addressFormKey.currentState;
     isAsync(true);
     if (addressData.validate() &&
@@ -449,6 +450,7 @@ class _AddAddressState extends State<AddAddress> {
       _newAddressForm.shipmentDistrId = memberId;
       _newAddressForm.shipmentArea = areaSplit.first;
       _newAddressForm.shipmentName = selectedArea.substring(7);
+      _newAddressForm..telephone = phone;
       _addressFormKey.currentState.save();
       isAsync(false);
       return true;
@@ -460,8 +462,10 @@ class _AddAddressState extends State<AddAddress> {
   Future _saveAddress(MainModel model, String memberId) async {
     isAsync(true);
     print('distrPoint:${model.distrPoint}');
-    List<ShipmentArea> list =
-        await model.getShipmentAreas(memberId, model.distrPoint);
+    List<ShipmentArea> list = await model.getShipmentAreas(
+        memberId, model.distrPoint,
+        isGuest: model.userInfo.isGuest ?? false,
+        phone: model.guestInfo?.phone ?? '');
     if (list.length == 3) {
       String delId = list.first.shipmentId.toString();
       http.delete(Uri.parse(
@@ -469,8 +473,12 @@ class _AddAddressState extends State<AddAddress> {
     }
     String msg;
 
-    http.Response response =
-        await _newAddressForm.createPost(_newAddressForm, model.setStoreId);
+    http.Response response = !model.userInfo.isGuest
+        ? await _newAddressForm.createAddPost(_newAddressForm, model.setStoreId)
+        : await _newAddressForm.createAddGuestPost(
+            _newAddressForm,
+            model.setStoreId,
+          );
     if (response.statusCode == 201) {
       msg = 'نجحت';
       isAsync(false);

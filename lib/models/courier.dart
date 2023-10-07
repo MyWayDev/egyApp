@@ -99,12 +99,14 @@ class ShipmentArea {
   String shipmentArea;
   String shipmentName;
   String shipmentAddress;
+  String telephone;
   ShipmentArea(
       {this.shipmentId,
       this.shipmentDistrId,
       this.shipmentArea,
       this.shipmentName,
-      this.shipmentAddress});
+      this.shipmentAddress,
+      this.telephone});
 
   factory ShipmentArea.fromJson(Map<String, dynamic> json) {
     return ShipmentArea(
@@ -112,13 +114,15 @@ class ShipmentArea {
         shipmentDistrId: json['DISTR_ID'],
         shipmentArea: json['DS_SHIPMENT_PLACE'],
         shipmentName: json['SPNAME'],
-        shipmentAddress: json['ADDRESS_NOTES']);
+        shipmentAddress: json['ADDRESS_NOTES'],
+        telephone: json['TELEPHONE'] ?? '');
   }
   Map<String, dynamic> toJson() => {
         "DISTR_ID": shipmentDistrId,
         "DS_SHIPMENT_PLACE": shipmentArea,
         "SPNAME": shipmentName,
         "ADDRESS_NOTES": shipmentAddress,
+        "TELEPHONE": telephone ?? '',
       };
 
   String postAddressToJson(ShipmentArea address) {
@@ -126,10 +130,24 @@ class ShipmentArea {
     return json.encode(dyn);
   }
 
-  Future<http.Response> createPost(ShipmentArea address, storeId) async {
+  Future<http.Response> createAddPost(ShipmentArea address, storeId) async {
     final response = await http.put(
         Uri.parse(
             'http://mywayegypt-api.azurewebsites.net/api/add_new_distr_shipment_place/$storeId'),
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/json',
+          //HttpHeaders.authorizationHeader: ''
+        },
+        body: postAddressToJson(address));
+
+    return response;
+  }
+
+  Future<http.Response> createAddGuestPost(
+      ShipmentArea address, storeId) async {
+    final response = await http.put(
+        Uri.parse(
+            'http://mywayegypt-api.azurewebsites.net/api/put-guest-address/$storeId'),
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json',
           //HttpHeaders.authorizationHeader: ''

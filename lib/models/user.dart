@@ -19,7 +19,7 @@ class Guest {
 
   Guest.fromGuestSnapshot(DataSnapshot snapshot)
       : key = snapshot.value["key"],
-        phone = snapshot.value["phone"],
+        phone = snapshot.value["phone"] ?? "",
         stamp = snapshot.value["stamp"] ?? DateTime.now().toString(),
         token = snapshot.value["token"],
         isAllowed = snapshot.value["isAllowed"] ?? false;
@@ -27,7 +27,7 @@ class Guest {
   toJson() {
     return {
       "key": key,
-      "phone": phone,
+      "phone": phone ?? "",
       "stamp": stamp,
       "token": token,
       'isAllowed': isAllowed,
@@ -191,7 +191,9 @@ class NewMember {
       String storeId) async {
     final response = await http.put(
         Uri.parse(
-            'http://mywayegypt-api.azurewebsites.net/api/memregister_ds_8k/$user/$shipmentPlace/$areaId/$shipmentPlaceName/$docType/$storeId'),
+            'http://mywayegypt-api.azurewebsites.net/api/memregister-v2/$user/$shipmentPlace/$areaId/$shipmentPlaceName/$docType/$storeId'
+            //? -- deprecated api ..'http://mywayegypt-api.azurewebsites.net/api/memregister_ds_8k/$user/$shipmentPlace/$areaId/$shipmentPlaceName/$docType/$storeId'
+            ),
         headers: {
           HttpHeaders.contentTypeHeader: 'application/json',
           //HttpHeaders.authorizationHeader: ''
@@ -286,6 +288,14 @@ class Member {
       joinDate: json['JOIN_DATE'],
       perBp: json['per_bp'] ?? 0,
       areaName: json['area_name'],
+      telephone: json['TELEPHONE'],
+    );
+  }
+  factory Member.formJsonGuest(Map<String, dynamic> json) {
+    return Member(
+      distrId: json['DISTR_ID'],
+      name: json['ANAME'],
+      joinDate: json['JOIN_DATE'],
       telephone: json['TELEPHONE'],
     );
   }
